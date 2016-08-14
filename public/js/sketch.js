@@ -4,8 +4,8 @@
 138paulmiller@gmail.com
 */
 var sketch = (function (){
-	var scene, camera, renderer;
-	var points, pointSet,grahamScan, quickHull;
+	var scene, axis, camera, renderer;
+	var pointSet, pointsObj, grahamScanObj, quickHullObj;
 	var statsIndicator;
 	var mouseX, mouseY;
 	var pi2;
@@ -43,41 +43,8 @@ var sketch = (function (){
 		document.body.style.overflow = 'hidden';
 
 		//create a visual axis of the planes
-		var axis = makeAxis(boundary);
+		axis = makeAxis(boundary);
 		scene.add(axis);
-
-		var sz = 5;
-		var n = 100;
-		var r = 100;
-		var r2 = r/2;
-		//parametric functions for point dimension
-		// var x = function(seed){ return  (Math.cos(seed)) * (r2 + r* Math.cos(seed/2)); };
-		// var y = (function(seed){ return (Math.sin(seed)) * (r2 + r*Math.cos(seed/2)); });
-		// var z = (function(seed){ return Math.sin(seed/2)*r;});
-
-		// points = makePoints(n, sz, .24, x,y,z);
-		// //scene.add(makeBox(1,0,1));
-		// sce+(e.add(points);*
-		points = makePoints(25, 5, Math.PI/16,
-												function(seed){
-													return Math.sin(seed)*(Math.cos(seed+seed)*r*seed)%r+40;},
-												function(seed){
-													return Math.sin(seed*seed)+(Math.sin(Math.tan(seed))*r*seed)*r2%r+45;
-												},
-												function(seed){
-													return 0;
-												}
-												);
-		scene.add(points);
-		pointSet = [];
-		for(var i = 0; i < points.geometry.vertices.length; i++){
-			pointSet.push(points.geometry.vertices[i]);
-		}
-		 quickHull = quickHull(pointSet);
-		 grahamScan = grahamScan(pointSet);
-		// scene.add(quickHull.hullPolygon);
-		// scene.add(quickHull.points);
-
 
 		//add the renderer to the constainer element
 		renderer = new THREE.WebGLRenderer();
@@ -95,10 +62,13 @@ var sketch = (function (){
 		//add listeners to buttons
 		var buttonGraham = document.getElementById('grahamScan');
 		var buttonQuick = document.getElementById('quickHull');
+		var buttonPoints = document.getElementById('points');
 
+		var buttonClear = document.getElementById('clear');
+		buttonClear.addEventListener('click', clearScene);
 		buttonQuick.addEventListener('click', showQuickHull);
 		buttonGraham.addEventListener('click', showGrahamScan);
-
+		buttonPoints.addEventListener('click', showPoints);
 		//add event listeners to the page
 		window.addEventListener('resize', onWindowResize, false);
 		document.addEventListener('mousemove', onMouseMove, false);
@@ -130,13 +100,64 @@ function render() {
         }
 		renderer.render(scene, camera);
 	}
+	function clearScene(){
+		for (let i = scene.children.length - 1; i >= 0 ; i--) {
+	    let child = scene.children[ i ];
+	    if ( child != axis && child != camera) { // plane & camera are stored earlier
+	      scene.remove(child);
+	    }
+  	}
+	}
+	function showPoints(){
+				var sz = 5;
+				var n = 100;
+				var r = 100;
+				var r2 = r/2;
+				//parametric functions for point dimension
+				// var x = function(seed){ return  (Math.cos(seed)) * (r2 + r* Math.cos(seed/2)); };
+				// var y = (function(seed){ return (Math.sin(seed)) * (r2 + r*Math.cos(seed/2)); });
+				// var z = (function(seed){ return Math.sin(seed/2)*r;});
+
+				// points = makePoints(n, sz, .24, x,y,z);
+				// //scene.add(makeBox(1,0,1));
+				// sce+(e.add(points);*
+				pointsObj = makePoints(25, 5, Math.PI/16,
+														function(seed){
+															return Math.sin(seed)*(Math.cos(seed+seed)*r*seed)%r+40;},
+														function(seed){
+															return Math.sin(seed*seed)+(Math.sin(Math.tan(seed))*r*seed)*r2%r+45;
+														},
+														function(seed){
+															return 0;
+														}
+														);
+				scene.add(pointsObj);
+				pointSet = [];
+				for(var i = 0; i < pointsObj.geometry.vertices.length; i++){
+					pointSet.push(pointsObj.geometry.vertices[i]);
+				}
+	}
 	function showGrahamScan(){
-		scene.add(grahamScan.lines);
-		scene.add(grahamScan.path);
+		clearScene();
+		//algorithm destroys array so pass a copy over
+		var points = [];
+		for(var i = 0; i < pointSet.length;i++){
+			points.push(pointSet[i]);
+		}
+		grahamScanObj = grahamScan(points);
+		scene.add(grahamScanObj.lines);
+		scene.add(grahamScanObj.path);
 	}
 	function showQuickHull(){
-		scene.add(quickHull.points);
-		scene.add(quickHull.lines);
+		clearScene();
+		//algorithm destroys array so pass a copy over
+		var points = [];
+		for(var i = 0; i < pointSet.length;i++){
+			points.push(pointSet[i]);
+		}
+		quickHullObj = quickHull(points);
+		scene.add(quickHullObj.points);
+		scene.add(quickHullObj.lines);
 	}
 	function makeAxis(planeheight){
 		var geometry = new THREE.Geometry();
@@ -175,29 +196,29 @@ function render() {
 	    new THREE.MeshFaceMaterial({wireframe : true, color: 0xff8888}));
 	}
 
-	function grahamScan(pointSet){
-		if(pointSet && pointSet.length > 0){
-			var minIndex = 0; //find point with smallest y and swap it with pointSet[0]
-			for(var i = 0 ; i< pointSet.length; i++){
-				if(pointSet[i].x < pointSet[minIndex].x &&
-					pointSet[i].y < pointSet[minIndex].y){
+	function grahamScan(points){
+		if(points && points.length > 0){
+			var minIndex = 0; //find point with smallest y and swap it with points[0]
+			for(var i = 0 ; i< points.length; i++){
+				if(points[i].x < points[minIndex].x &&
+					points[i].y < points[minIndex].y){
 					minIndex = i;
 				}
 			}
-			var minY = pointSet[minIndex];
-			pointSet.splice(minIndex, 1);
-			pointSet = sortByPolar(minY, pointSet);
+			var minY = points[minIndex];
+			points.splice(minIndex, 1);
+			points = sortByPolar(minY, points);
 			var geometryPath = new THREE.Geometry();
 			var geometryLine = new THREE.Geometry();
 			var prev = new THREE.Vector3(minY.x,minY.y,0);
-			for(var i = 0; i < pointSet.length; i++){
+			for(var i = 0; i < points.length; i++){
 				geometryLine.vertices.push(new THREE.Vector3(minY.x,minY.y,0));
-				geometryLine.vertices.push(new THREE.Vector3(pointSet[i].x,pointSet[i].y,0));
+				geometryLine.vertices.push(new THREE.Vector3(points[i].x,points[i].y,0));
 				geometryLine.colors.push(new THREE.Color(0xff0055+(i*10)));
 				geometryLine.colors.push(new THREE.Color(0xff0055+(i*10)+10));
 
 				geometryPath.vertices.push(prev);
-				var cur =new THREE.Vector3(pointSet[i].x,pointSet[i].y,0);
+				var cur =new THREE.Vector3(points[i].x,points[i].y,0);
 				geometryPath.vertices.push(cur);
 				prev = cur;
 			}
@@ -208,8 +229,8 @@ function render() {
 							path : path};
 		}
 	}
-	function sortByPolar(p, pointSet){
-		return pointSet.sort(function(a,b){
+	function sortByPolar(p, points){
+		return points.sort(function(a,b){
 			//find the slope the
 			var det = ((b.x - p.x) * (a.y - p.y))-
 						((a.x - p.x) * (b.y - p.y));
@@ -221,8 +242,8 @@ function render() {
 					}
 		});
 	}
-	function quickHull(pointSet){
-		var points = sortByX(pointSet);
+	function quickHull(points){
+	 	points = sortByX(points);
 		//draw the line
 		var geometryLine = new THREE.Geometry();
 		var geometryPointAbove = new THREE.Geometry();
