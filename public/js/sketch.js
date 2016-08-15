@@ -52,6 +52,7 @@ var sketch = (function (){
 
 		//add the renderer to the constainer element
 		renderer = new THREE.WebGLRenderer();
+
     renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(width, height);
 
@@ -357,7 +358,10 @@ function render() {
 	/*
 	Event listeners*/
 	function onWindowResize(e){
-
+		height = window.innerHeight;
+		width = window.innerWidth;
+		renderer.setPixelRatio(window.devicePixelRatio);
+		renderer.setSize(width, height);
 	}
 	function onMouseMove(e){
 		mouseX = e.clientX - heightHalf;
@@ -371,9 +375,10 @@ function render() {
 	}
 	function onTouchMove(e){
 
+			mouseX = e.clientX - heightHalf;
+			mouseY = e.clientY - widthHalf;
 	}
 	function onTouchStart(e){
-
 	}
 });
 
