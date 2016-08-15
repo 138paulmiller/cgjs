@@ -211,35 +211,28 @@ function render() {
 			var geometryPath = new THREE.Geometry();
 			var geometryLine = new THREE.Geometry();
 			var prev = new THREE.Vector3(minY.x,minY.y,0);
+
 			for(var i = 0; i < points.length; i++){
+				console.log("("+ points[i].x + "," + points[i].y + ")\n");
 				geometryLine.vertices.push(new THREE.Vector3(minY.x,minY.y,0));
 				geometryLine.vertices.push(new THREE.Vector3(points[i].x,points[i].y,0));
-				geometryLine.colors.push(new THREE.Color(0xff0055+(i*10)));
-				geometryLine.colors.push(new THREE.Color(0xff0055+(i*10)+10));
-
 				geometryPath.vertices.push(prev);
 				var cur =new THREE.Vector3(points[i].x,points[i].y,0);
 				geometryPath.vertices.push(cur);
 				prev = cur;
 			}
-			var lines =  new THREE.Line(geometryLine, new THREE.LineBasicMaterial({vertexColors: THREE.VertexColors}));
+			var lines =  new THREE.Line(geometryLine, new THREE.LineBasicMaterial({color : 0xf3f3f3}));
 			var path =  new THREE.Line(geometryPath, new THREE.LineBasicMaterial({color: 0x6660ff}));
 
 			return {lines : lines,
 							path : path};
 		}
 	}
-	function sortByPolar(p, points){
-		return points.sort(function(a,b){
-			//find the slope the
-			var det = ((b.x - p.x) * (a.y - p.y))-
-						((a.x - p.x) * (b.y - p.y));
-					if(det > 0){
-						return true;
-					}
-					else{
-						return false;
-					}
+	function sortByPolar(a, points){
+		return points.sort(function(b,c){
+	    // compute the determinant
+	    return (a.x*b.y) + (b.x*c.y) + (c.x*a.y) - (b.y*c.x) - (c.y*a.x) - (a.y*b.x);
+
 		});
 	}
 	function quickHull(points){
