@@ -374,9 +374,7 @@ function render() {
 		mouseDown = false;
 	}
 	function onTouchMove(e){
-    if (e.touches.length == 1) {
-
-        e.preventDefault();
+    if (e.touches.length === 1) {
         mouseX = e.touches[0].pageX - windowHalfX;
         mouseY = e.touches[0].pageY - windowHalfY;
       }
