@@ -69,6 +69,11 @@ var sketch = (function (){
 		document.getElementById('quickHull').addEventListener('click', showQuickHull);
 		document.getElementById('grahamScan').addEventListener('click', showGrahamScan);
 		document.getElementById('points').addEventListener('click', showPoints);
+		document.getElementById('clear').addEventListener('touchstart', clearScene);
+		document.getElementById('quickHull').addEventListener('touchstart', showQuickHull);
+		document.getElementById('grahamScan').addEventListener('touchstart', showGrahamScan);
+		document.getElementById('points').addEventListener('touchstart', showPoints);
+
 		//add event listeners to the page
 		window.addEventListener('resize', onWindowResize, false);
 		document.addEventListener('mousemove', onMouseMove, false);
