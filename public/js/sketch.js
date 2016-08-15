@@ -9,8 +9,10 @@ var sketch = (function (){
 	var statsIndicator;
 	var mouseX, mouseY;
 	var pi2;
+	var mouseDown = false;
 
 	var height, width, heightHalf, widthHalf, fieldOfView,aspectRatio,nearPlane, farPlane;
+	var boundaryX, boundaryY;
 	init();
 	draw();
 
@@ -24,16 +26,18 @@ var sketch = (function (){
 		aspectRatio = width / height;
 		nearPlane = 1;
 		farPlane = 2000;
-		cameraZ = 250;
-		boundary = 200;
+		cameraZ = 150;
+		boundaryX = heightHalf-50;
+		boundaryY = heightHalf-50;
+		boundaryAxis = heightHalf-50;
 		mouseX = 0,
   	mouseY = 0,
 		pi2 = Math.PI/2;
 
 		scene = new THREE.Scene();
 		camera = new THREE.PerspectiveCamera( fieldOfView, aspectRatio, nearPlane, farPlane );
-		camera.position.x = 60;
-		camera.position.y = 60;
+		camera.position.x = 100;
+		camera.position.y = 100;
 		camera.position.z = cameraZ;
 
 		//Create a container to add to the document
@@ -43,7 +47,7 @@ var sketch = (function (){
 		document.body.style.overflow = 'hidden';
 
 		//create a visual axis of the planes
-		axis = makeAxis(boundary);
+		axis = makeAxis(boundaryAxis);
 		scene.add(axis);
 
 		//add the renderer to the constainer element
@@ -60,18 +64,15 @@ var sketch = (function (){
     container.appendChild(statsIndicator.domElement);
 
 		//add listeners to buttons
-		var buttonGraham = document.getElementById('grahamScan');
-		var buttonQuick = document.getElementById('quickHull');
-		var buttonPoints = document.getElementById('points');
-
-		var buttonClear = document.getElementById('clear');
-		buttonClear.addEventListener('click', clearScene);
-		buttonQuick.addEventListener('click', showQuickHull);
-		buttonGraham.addEventListener('click', showGrahamScan);
-		buttonPoints.addEventListener('click', showPoints);
+		document.getElementById('clear').addEventListener('click', clearScene);
+		document.getElementById('quickHull').addEventListener('click', showQuickHull);
+		document.getElementById('grahamScan').addEventListener('click', showGrahamScan);
+		document.getElementById('points').addEventListener('click', showPoints);
 		//add event listeners to the page
 		window.addEventListener('resize', onWindowResize, false);
 		document.addEventListener('mousemove', onMouseMove, false);
+		document.addEventListener('mousedown', onMouseDown, false);
+		document.addEventListener('mouseup', onMouseUp, false);
 		document.addEventListener('touchstart', onTouchStart, false); //for mobile
 		document.addEventListener('touchmove', onTouchMove, false); //for mobile
 	}
@@ -88,19 +89,22 @@ var sketch = (function (){
 	Repeatedly draws the threejs objectss
 */
 function render() {
-		camera.position.x += (mouseX - camera.position.x) * 0.5;
-    camera.position.y += (-mouseY - camera.position.y) * 0.5;
+		camera.position.x += (mouseX - camera.position.x) * .75;
+    camera.position.y += (-mouseY - camera.position.y) * .75;
     camera.lookAt(scene.position);
 		//loop through rendered objects in scene
 		for (i = 0; i < scene.children.length; i++) {
-            var object = scene.children[i];
-            if (object instanceof THREE.Points) {
-							//if object is a points mesh
-            }
+          var object = scene.children[i];
+          if (object instanceof THREE.Points) {
+						//if object is a points mesh
+          }
         }
 		renderer.render(scene, camera);
 	}
 	function clearScene(){
+		delete pointsObj;
+		delete grahamScanObj;
+		delete quickHullObj;
 		for (let i = scene.children.length - 1; i >= 0 ; i--) {
 	    let child = scene.children[ i ];
 	    if ( child != axis && child != camera) { // plane & camera are stored earlier
@@ -109,36 +113,26 @@ function render() {
   	}
 	}
 	function showPoints(){
-				var sz = 5;
-				var n = 100;
-				var r = 100;
-				var r2 = r/2;
-				//parametric functions for point dimension
-				// var x = function(seed){ return  (Math.cos(seed)) * (r2 + r* Math.cos(seed/2)); };
-				// var y = (function(seed){ return (Math.sin(seed)) * (r2 + r*Math.cos(seed/2)); });
-				// var z = (function(seed){ return Math.sin(seed/2)*r;});
+			var sz = document.getElementById("size").value;
+			var n = document.getElementById("n").value;
+			var r = 100;
+			var r2 = r/2;
 
-				// points = makePoints(n, sz, .24, x,y,z);
-				// //scene.add(makeBox(1,0,1));
-				// sce+(e.add(points);*
-				pointsObj = makePoints(25, 5, Math.PI/16,
-														function(seed){
-															return Math.sin(seed)*(Math.cos(seed+seed)*r*seed)%r+40;},
-														function(seed){
-															return Math.sin(seed*seed)+(Math.sin(Math.tan(seed))*r*seed)*r2%r+45;
-														},
-														function(seed){
-															return 0;
-														}
-														);
-				scene.add(pointsObj);
-				pointSet = [];
-				for(var i = 0; i < pointsObj.geometry.vertices.length; i++){
-					pointSet.push(pointsObj.geometry.vertices[i]);
-				}
+			//parametric functions for point dimension
+			 var x = function(p){return (Math.random() * (boundaryX*2)) - (boundaryX);};
+			 var y = function(p){return (Math.random() * (boundaryY*2)) - (boundaryY);};
+			 var z = function(p){return 0;};
+
+			clearScene();
+
+			pointsObj = makePoints(n, sz, Math.PI/16,x,y,z);
+			scene.add(pointsObj);
+			pointSet = [];
+			for(var i = 0; i < pointsObj.geometry.vertices.length; i++){
+				pointSet.push(pointsObj.geometry.vertices[i]);
+			}
 	}
 	function showGrahamScan(){
-		clearScene();
 		//algorithm destroys array so pass a copy over
 		var points = [];
 		for(var i = 0; i < pointSet.length;i++){
@@ -149,7 +143,6 @@ function render() {
 		scene.add(grahamScanObj.path);
 	}
 	function showQuickHull(){
-		clearScene();
 		//algorithm destroys array so pass a copy over
 		var points = [];
 		for(var i = 0; i < pointSet.length;i++){
@@ -206,7 +199,7 @@ function render() {
 				}
 			}
 			var minY = points[minIndex];
-			points.splice(minIndex, 1);
+			points.splice(minIndex, 1); //remove minY point from set
 			points = sortByPolar(minY, points);
 			var geometryPath = new THREE.Geometry();
 			var geometryLine = new THREE.Geometry();
@@ -283,7 +276,6 @@ function render() {
 		/*calc hull of points*/
 		/* for each p in points, create triangle a,b,p and find area,
 		   if new area is larger then max update update */
-			 var maxIndex = 0;
 			 var maxArea = 0;
 			 var maxPt;
 			 var t;
@@ -371,10 +363,22 @@ function render() {
 		mouseX = e.clientX - heightHalf;
 		mouseY = e.clientY - widthHalf;
 	}
-	function onTouchStart(e){
-
+	function onMouseDown(e){
+		mouseDown = true;
+	}
+	function onMouseUp(e){
+		mouseDown = false;
 	}
 	function onTouchMove(e){
 
 	}
+	function onTouchStart(e){
+
+	}
 });
+
+
+
+
+
+var maxIndex = 0;
