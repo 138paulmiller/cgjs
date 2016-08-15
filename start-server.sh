@@ -1,2 +1,4 @@
 #/bin/sh
-nodejs server/index.js
+nodejs server/server.js
+node server/server.js
+
