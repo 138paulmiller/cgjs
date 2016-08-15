@@ -360,6 +360,8 @@ function render() {
 	function onWindowResize(e){
 		height = window.innerHeight;
 		width = window.innerWidth;
+		widthHalf = width/2;
+		heightHalf = height/2;
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(width, height);
 	}
@@ -375,14 +377,16 @@ function render() {
 	}
 	function onTouchMove(e){
     if (e.touches.length === 1) {
-        mouseX = e.touches[0].pageX - windowHalfX;
-        mouseY = e.touches[0].pageY - windowHalfY;
+			e.preventDefault();
+        mouseX = e.touches[0].pageX - widthHalf;
+        mouseY = e.touches[0].pageY - heightHalf;
       }
 	}
 	function onTouchStart(e){
 		if (e.touches.length === 1) {
-			 mouseX = e.touches[0].pageX - windowHalfX;
-			 mouseY = e.touches[0].pageY - windowHalfY;
+			 e.preventDefault();
+			 mouseX = e.touches[0].pageX - widthHalf;
+			 mouseY = e.touches[0].pageY - heightHalf;
 	 }
 	}
 });
