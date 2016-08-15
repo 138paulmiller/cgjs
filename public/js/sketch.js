@@ -380,6 +380,10 @@ function render() {
       }
 	}
 	function onTouchStart(e){
+		if (e.touches.length === 1) {
+			 mouseX = e.touches[0].pageX - windowHalfX;
+			 mouseY = e.touches[0].pageY - windowHalfY;
+	 }
 	}
 });
 
