@@ -1,4 +1,4 @@
 #/bin/sh
-nodejs server/server.js
-node server/server.js
+nodejs server.js
+node server.js
 
