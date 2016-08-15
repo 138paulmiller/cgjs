@@ -1,22 +1,27 @@
 {
-  "name": "138paul",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "cgjs",
+  "version": "0.0.1",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/138paulmiller/138paul.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/138paulmiller/138paul/issues"
-  },
-  "homepage": "https://github.com/138paulmiller/138paul#readme",
   "dependencies": {
-    "express": "^4.14.0"
+    "express": "^4.13.3",
+    "serve-favicon": "^2.3.0",
+    "morgan": "^1.6.1",
+    "cookie-parser": "^1.3.3",
+    "body-parser": "^1.13.3",
+    "compression": "^1.5.2",
+    "method-override": "^2.3.0",
+    "glob": "^6.0.4",
+    "jade": "^1.11.0"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-develop": "^0.4.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "request": "^2.60.0",
+    "time-grunt": "^1.2.1",
+    "load-grunt-tasks": "^3.2.0"
   }
 }
