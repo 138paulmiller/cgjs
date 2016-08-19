@@ -12,7 +12,6 @@ var sketch = (function (){
 	var mouseDown = false;
 
 	var height, width, heightHalf, widthHalf, fieldOfView,aspectRatio,nearPlane, farPlane;
-	var boundaryX, boundaryY;
 	init();
 	draw();
 
@@ -27,8 +26,6 @@ var sketch = (function (){
 		nearPlane = 1;
 		farPlane = 2000;
 		cameraZ = 150;
-		boundaryX = heightHalf-50;
-		boundaryY = heightHalf-50;
 		boundaryAxis = heightHalf-50;
 		mouseX = 0,
   	mouseY = 0,
@@ -42,6 +39,7 @@ var sketch = (function (){
 
 		//Create a container to add to the document
 		container = document.createElement('div');
+		container.id = "sketch";
 		document.body.appendChild(container);
 		document.body.style.margin = 0;
 		document.body.style.overflow = 'hidden';
@@ -123,11 +121,23 @@ function render() {
 			var n = document.getElementById("n").value;
 			var r = 100;
 			var r2 = r/2;
+			var xUpperBound = new String(document.getElementById("xUpperBound").value.toString());
+			var xLowerBound = new String(document.getElementById("xLowerBound").value.toString());
+			var yUpperBound = new String(document.getElementById("yUpperBound").value.toString());
+			var yLowerBound = new String(document.getElementById("yLowerBound").value.toString());
+			var zUpperBound = new String(document.getElementById("zUpperBound").value.toString());
+			var zLowerBound = new String(document.getElementById("zLowerBound").value.toString());
 
+			var xfunc =  new String(document.getElementById("xfunc").value.toString());
+			var yfunc =  new String(document.getElementById("yfunc").value.toString());
+			var zfunc =  new String(document.getElementById("zfunc").value.toString());
+			var boundXFunc = new String("(("+ xUpperBound+"*2) * "  + xfunc + ") + (" + xLowerBound + ")"); //completes functions to restrain x,y,z
+			var boundYFunc = new String("((" + yUpperBound+"*2) * "  + yfunc + ") + (" + yLowerBound + ")");
+			var boundZFunc = new String("((" + zUpperBound+"*2) * "  + zfunc + ") + (" + zLowerBound + ")");
 			//parametric functions for point dimension
-			 var x = function(p){return (Math.random() * (boundaryX*2)) - (boundaryX);};
-			 var y = function(p){return (Math.random() * (boundaryY*2)) - (boundaryY);};
-			 var z = function(p){return 0;};
+			 var x = function(p){return eval(boundXFunc.toString());};
+			 var y = function(p){return eval( boundYFunc.toString())};
+			 var z = function(p){return eval(boundZFunc.toString());};
 
 			clearScene();
 
@@ -395,9 +405,3 @@ function render() {
 	 }
 	}
 });
-
-
-
-
-
-var maxIndex = 0;

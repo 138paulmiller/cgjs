@@ -1,25 +1,38 @@
 <html>
 	<head>
+		<!--
+		Internet required
 		<script src="http://threejs.org/build/three.min.js"></script>
+	  -->
+		<script src="js/three.min.js"></script>
 		<script src="js/threex.rendererstats.js"> </script>
 		<script src="js/sketch.js" ></script>
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+
 
 		<title>ThreeJs Sketch</title>
-		<style>
-			body { margin: 0; }
-			canvas { width: 100%; height: 100% }
-		</style>
-       <style type="text/css">
-            tab1 { padding-left: 4em}
-		</style>
+
 	</head>
 	<body >
-		<button id="points" type="button" >Points</button>
-		 n: <input id='n' type='number' size='6' value='100'>
-		 size: <input id='size' type='number' size='2' value='5'>
-		<button id="grahamScan" type="button" >GrahamScan</button>
-		<button id="quickHull" type="button" >QuickHull</button>
+		<div id="inputs">
+		x(p): <input id='xfunc' type='string' size='60' value='Math.random()'> <br>
+		y(p): <input id='yfunc' type='string' size='60' value='Math.random()'> <br>
+		z(p): <input id='zfunc' type='string' size='60' value='0'> <br>
+		X upper bound: <input id='xUpperBound' type='int' size='6' value='100'> <br>
+		X lower bound: <input id='xLowerBound' type='int' size='6' value='-100'> <br>
+		Y upper bound: <input id='yUpperBound' type='int' size='6' value='100'> <br>
+		Y lower bound: <input id='yLowerBound' type='int' size='6' value='-100'> <br>
+		Z upper bound: <input id='zUpperBound' type='int' size='6' value='0'> <br>
+		Z lower bound: <input id='zLowerBound' type='int' size='6' value='0'> <br>
+
+		 n: <input id='n' type='number' size='6' value='100'><br>
+		 size: <input id='size' type='number' size='2' value='5'><br>
+		 <button id="points" type="button" >Points</button><br>
+		<button id="grahamScan" type="button" >GrahamScan</button><br>
+		<button id="quickHull" type="button" >QuickHull</button><br>
 		<button id="clear" type="button" >Clear</button>
+	</div>
+<!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
 		<script>
 		sketch();
 		</script>
