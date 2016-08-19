@@ -118,8 +118,7 @@ function render() {
 	}
 	function showPoints(){
 			var sz = document.getElementById("size").value;
-			var r = 100;
-			var r2 = r/2;
+			var a = new String(document.getElementById("a").value.toString());
 			var xmax = new String(document.getElementById("xmax").value.toString());
 			var xmin = new String(document.getElementById("xmin").value.toString());
 			var ymax = new String(document.getElementById("ymax").value.toString());
@@ -129,24 +128,31 @@ function render() {
 			var xfunc =  new String(document.getElementById("xfunc").value.toString());
 			var yfunc =  new String(document.getElementById("yfunc").value.toString());
 			var zfunc =  new String(document.getElementById("zfunc").value.toString());
-			var boundXFunc = replaceFunctions(new String("(("+ xmax+"*2) * "  + xfunc + ") + (" + xmin + ")")); //completes functions to restrain x,y,z
-			var boundYFunc = replaceFunctions(new String("((" + ymax+"*2) * "  + yfunc + ") + (" + ymin + ")"));
-			var boundZFunc = replaceFunctions(new String("((" + zmax+"*2) * "  + zfunc + ") + (" + zmin + ")"));
 			var increment = eval(replaceFunctions(new String(document.getElementById("increment").value.toString())));
-			var pmax =  eval(replaceFunctions(document.getElementById("pmax").value.toString()));
-			var pmin = eval(replaceFunctions(document.getElementById("pmin").value.toString()));
-
+			var tmax =  eval(replaceFunctions(document.getElementById("tmax").value.toString()));
+			var tmin = eval(replaceFunctions(document.getElementById("tmin").value.toString()));
+			if(/rand/.test(xfunc)){
+				xfunc = (new String("(("+xmax +"*2)*" + xfunc + ")+ " + xmin));
+			}
+			if(/rand/.test(yfunc)){
+				yfunc = (new String("(("+ymax +"*2)*" + yfunc + ")+ " + ymin));
+			}
+			if(/rand/.test(zfunc)){
+				zfunc = (new String("(("+zmax +"*2)*" + zfunc + ")+ " + zmin));
+			}
+			xfunc = replaceFunctions(xfunc);
+			yfunc = replaceFunctions(yfunc);
+			zfunc = replaceFunctions(zfunc);
 
 			//parametric functions for point dimension
-			alert(increment);
 
-			 var x = function(p){return eval(boundXFunc.toString()); };
-			 var y = function(p){return eval( boundYFunc.toString()); };
-			 var z = function(p){return eval(boundZFunc.toString()); };
+			 var x = function(t){return eval(xfunc.toString()); };
+			 var y = function(t){return eval( yfunc.toString()); };
+			 var z = function(t){return eval(zfunc.toString()); };
 
 			clearScene();
 
-			pointsObj = makeParametricPoints(sz, increment, pmax, pmin, x,y,z);
+			pointsObj = makeParametricPoints(sz, increment, tmax, tmin, x,y,z);
 			scene.add(pointsObj);
 			pointSet = [];
 			for(var i = 0; i < pointsObj.geometry.vertices.length; i++){
@@ -155,8 +161,10 @@ function render() {
 	}
 	function replaceFunctions(source){
 		source = source.replace(/sin/ig,"Math.sin");
+		source = source.replace(/tan/ig,"Math.tan");
 		source = source.replace(/cos/ig,"Math.cos");
 		source = source.replace(/sqrt/ig,"Math.sqrt");
+		source = source.replace(/rand/ig,"Math.random()");
 		source = source.replace(/pi/ig,"Math.PI");
 		return source;
 	}
@@ -199,15 +207,11 @@ function render() {
 		var d = 3; //dimension
 		var geometry = new THREE.Geometry();
 		var increment = (parseFloat(increment));
-		console.log(pmax);
-		console.log(pmin);
-		console.log(increment);
 		//Creates shape meshes to add to the scene
 		for(var deg = pmin; deg < pmax; deg += increment){
 			var pt = [ x(deg), y(deg),z(deg)];
 			var vec = new THREE.Vector3(pt[0], pt[1],pt[2]);
 			geometry.vertices.push(vec);
-			console.log("Deg=" + deg+increment);
 		}
 		var points = new THREE.Points( geometry, new THREE.PointsMaterial( {size: sz}));
 		return points; //add to scene

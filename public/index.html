@@ -15,21 +15,23 @@
 	</head>
 	<body >
 		<div id="inputs">
-		x(p): <input id='xfunc' type='string' size='60' value='Math.random()'> <br>
-		y(p): <input id='yfunc' type='string' size='60' value='Math.random()'> <br>
-		z(p): <input id='zfunc' type='string' size='60' value='0'> <br><br>
-		X max: <input id='xmax' type='string' size='6' value='100'> <br>
-		X min: <input id='xmin' type='string' size='6' value='-100'> <br><br>
-		Y max: <input id='ymax' type='string' size='6' value='100'> <br>
-		Y min: <input id='ymin' type='string' size='6' value='-100'> <br><br>
-		Z max: <input id='zmax' type='string' size='6' value='0'> <br>
-		Z min: <input id='zmin' type='string' size='6' value='0'> <br><br>
-		P max: <input id='pmax' type='string' size='6' value='pi*2'> <br>
-		P min: <input id='pmin' type='string' size='6' value='0'> <br>
+			a: <input id='a' type='int' size='6' value='100'> <br><br>
+		x(t): <input id='xfunc' type='string' size='60' value='cos(t)*a'> <br>
+		y(t): <input id='yfunc' type='string' size='60' value='sin(t)*a'> <br>
+		z(t): <input id='zfunc' type='string' size='60' value='0'> <br><br>
+		tmax: <input id='tmax' type='string' size='6' value='pi*2'> <br>
+		tmin: <input id='tmin' type='string' size='6' value='0'> <br>
 		increment: <input id='increment' type='int' size='6' value='pi/16'> <br><br>
+		Bounds for rand function:<br>
+		x max: <input id='xmax' type='string' size='6' value='100'> <br>
+		x min: <input id='xmin' type='string' size='6' value='-100'> <br><br>
+		y max: <input id='ymax' type='string' size='6' value='100'> <br>
+		y min: <input id='ymin' type='string' size='6' value='-100'> <br><br>
+		z max: <input id='zmax' type='string' size='6' value='0'> <br>
+		z min: <input id='zmin' type='string' size='6' value='0'> <br><br>
 
-		 size: <input id='size' type='string' size='2' value='5'><br><br>
-		 <button id="points" type="button" >Points</button><br>
+		 <button id="points" type="button" >Show Points</button>
+		 Point size: <input id='size' type='string' size='2' value='5'><br>
 		<button id="grahamScan" type="button" >GrahamScan</button><br>
 		<button id="quickHull" type="button" >QuickHull</button><br>
 		<button id="clear" type="button" >Clear</button>
