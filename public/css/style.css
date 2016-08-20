@@ -35,7 +35,10 @@ canvas {
     overflow:auto;
 }
 
-.dropdown:hover .dropdown-content {
+.dropdown:hover, .dropdown:focus .dropdown-content {
+    display: block;
+}
+.dropdown:ontouch .dropdown-content {
     display: block;
 }
 
