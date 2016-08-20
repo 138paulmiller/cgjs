@@ -50,7 +50,10 @@ var sketch = (function (){
 
 		//add the renderer to the constainer element
 		renderer = new THREE.WebGLRenderer();
-
+		renderer.domElement.style.position = 'absolute';
+		renderer.domElement.style.top = '0px';
+    renderer.domElement.style.right = '0px';
+		renderer.domElement.style.zindex = '1';
     renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(width, height);
 
@@ -510,4 +513,5 @@ function render() {
 			 mouseY = e.touches[0].pageY - heightHalf;
 	 }
 	}
+
 });
