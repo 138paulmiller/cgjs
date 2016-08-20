@@ -66,11 +66,14 @@ var sketch = (function (){
 		document.getElementById('clear').addEventListener('click', clearScene);
 		document.getElementById('quickHull').addEventListener('click', showQuickHull);
 		document.getElementById('grahamScan').addEventListener('click', showGrahamScan);
-		document.getElementById('points').addEventListener('click', showPoints);
+		document.getElementById('points').addEventListener('click', getCustomPoints);
+		document.getElementById('pointsrandom').addEventListener('click', getRandomPoints);
+
 		document.getElementById('clear').addEventListener('touchstart', clearScene);
 		document.getElementById('quickHull').addEventListener('touchstart', showQuickHull);
 		document.getElementById('grahamScan').addEventListener('touchstart', showGrahamScan);
-		document.getElementById('points').addEventListener('touchstart', showPoints);
+		document.getElementById('points').addEventListener('touchstart', getCustomPoints);
+		document.getElementById('pointsrandom').addEventListener('touchstart', getRandomPoints);
 
 		//add event listeners to the page
 		window.addEventListener('resize', onWindowResize, false);
@@ -116,7 +119,31 @@ function render() {
 	    }
   	}
 	}
-	function showPoints(){
+	function getRandomPoints(){
+		var sz = document.getElementById("size").value;
+		var n = new String(document.getElementById("n").value.toString());
+		var xmax = new String(document.getElementById("xmax").value.toString());
+		var xmin = new String(document.getElementById("xmin").value.toString());
+		var ymax = new String(document.getElementById("ymax").value.toString());
+		var ymin = new String(document.getElementById("ymin").value.toString());
+		var zmax = new String(document.getElementById("zmax").value.toString());
+		var zmin = new String(document.getElementById("zmin").value.toString());
+		var xfunc = replaceFunctions(new String("(("+xmax +"*2)* rand )+ " + xmin));
+		var yfunc = replaceFunctions(new String("(("+ymax +"*2)* rand )+ " + ymin));
+		var zfunc = replaceFunctions(new String("(("+zmax +"*2)* rand )+ " + zmin));
+		var x = function(t){return eval(xfunc.toString()); };
+		var y = function(t){return eval( yfunc.toString()); };
+		var z = function(t){return eval(zfunc.toString()); };
+		pointsObj = makeParametricPoints(sz, 1, n, 0, x,y,z);
+		clearScene();
+		scene.add(pointsObj);
+		pointSet = [];
+		for(var i = 0; i < pointsObj.geometry.vertices.length; i++){
+			pointSet.push(pointsObj.geometry.vertices[i]);
+		}
+
+	}
+	function getCustomPoints(){
 			var sz = document.getElementById("size").value;
 			var a = new String(document.getElementById("a").value.toString());
 			var xmax = new String(document.getElementById("xmax").value.toString());
@@ -131,7 +158,8 @@ function render() {
 			var increment = eval(replaceFunctions(new String(document.getElementById("increment").value.toString())));
 			var tmax =  eval(replaceFunctions(document.getElementById("tmax").value.toString()));
 			var tmin = eval(replaceFunctions(document.getElementById("tmin").value.toString()));
-			if(/rand/.test(xfunc)){
+
+			if(/rand/.test(xfunc)){ //add boundaries if user is using random func
 				xfunc = (new String("(("+xmax +"*2)*" + xfunc + ")+ " + xmin));
 			}
 			if(/rand/.test(yfunc)){
@@ -140,10 +168,13 @@ function render() {
 			if(/rand/.test(zfunc)){
 				zfunc = (new String("(("+zmax +"*2)*" + zfunc + ")+ " + zmin));
 			}
+
+
+			//make subs from user input to js syntax,
+			//sin becomes Math.sin , rand becomes MAth.random() etc
 			xfunc = replaceFunctions(xfunc);
 			yfunc = replaceFunctions(yfunc);
 			zfunc = replaceFunctions(zfunc);
-
 			//parametric functions for point dimension
 
 			 var x = function(t){return eval(xfunc.toString()); };
@@ -176,7 +207,9 @@ function render() {
 		}
 		grahamScanObj = grahamScan(points);
 		scene.add(grahamScanObj.lines);
-		scene.add(grahamScanObj.path);
+		//scene.add(grahamScanObj.path);
+		scene.add(grahamScanObj.hull);
+
 	}
 	function showQuickHull(){
 		//algorithm destroys array so pass a copy over
@@ -222,38 +255,78 @@ function render() {
 	    new THREE.BoxGeometry( w, h, d ),
 	    new THREE.MeshFaceMaterial({wireframe : true, color: 0xff8888}));
 	}
-
-	function grahamScan(points){
-		if(points && points.length > 0){
-			var minIndex = 0; //find point with smallest y and swap it with points[0]
-			for(var i = 0 ; i< points.length; i++){
-				if(points[i].x < points[minIndex].x &&
-					points[i].y < points[minIndex].y){
-					minIndex = i;
-				}
+	function findMinY(points){
+		var minIndex = 0; //find point with smallest y and swap it with points[0]
+		for(var i = 0 ; i< points.length; i++){
+			if(points[i].y < points[minIndex].y){
+				minIndex = i;
 			}
-			var minY = points[minIndex];
-			points.splice(minIndex, 1); //remove minY point from set
-			points = sortByPolar(minY, points);
-			var geometryPath = new THREE.Geometry();
-			var geometryLine = new THREE.Geometry();
-			var prev = new THREE.Vector3(minY.x,minY.y,0);
-
-			for(var i = 0; i < points.length; i++){
-				console.log("("+ points[i].x + "," + points[i].y + ")\n");
-				geometryLine.vertices.push(new THREE.Vector3(minY.x,minY.y,0));
-				geometryLine.vertices.push(new THREE.Vector3(points[i].x,points[i].y,0));
-				geometryPath.vertices.push(prev);
-				var cur =new THREE.Vector3(points[i].x,points[i].y,0);
-				geometryPath.vertices.push(cur);
-				prev = cur;
-			}
-			var lines =  new THREE.Line(geometryLine, new THREE.LineBasicMaterial({color : 0xf3f3f3}));
-			var path =  new THREE.Line(geometryPath, new THREE.LineBasicMaterial({color: 0x6660ff}));
-
-			return {lines : lines,
-							path : path};
 		}
+		return {point: points[minIndex],
+						index : minIndex};
+	}
+	function grahamScan(points){
+		if(!points || points.length < 0){
+			return null;
+		}
+
+		var geometryPath = new THREE.Geometry(); //shows how points where traversed
+		var geometryLine = new THREE.Geometry(); //shows each point vector line from origin, min point
+		var geometryHull = new THREE.Geometry();
+
+		var min = findMinY(points);
+		var minIndex = min.index;
+		var minPt = min.point;
+		points.splice(minIndex, 1); //remove minY point from set
+		points = sortByPolar(minPt, points);
+		var prev = new THREE.Vector3(points[0].x,points[0].y,points[0].z);
+		var cur = new THREE.Vector3(points[1].x,points[1].y,points[1].z);
+		geometryPath.vertices.push(minPt); //min y will be on hull
+		geometryPath.vertices.push(prev);
+		geometryPath.vertices.push(cur);
+		//push first three points
+		geometryHull.vertices.push(minPt); //min y will be on hul
+		geometryHull.vertices.push(prev); //pushed on hull stack
+		geometryHull.vertices.push(cur); //pushed on hull stack
+
+
+		for(var i = 2; i < points.length; i++){
+			prev = new THREE.Vector3(points[i-1].x,points[i-1].y,points[i-1].z);
+			cur = new THREE.Vector3(points[i].x,points[i].y,points[i].z);
+			//add points to lines, and path
+			geometryLine.vertices.push(minPt); //min y will be on hull
+			geometryLine.vertices.push(cur);
+			geometryPath.vertices.push(prev);
+			geometryPath.vertices.push(cur);
+
+
+			//find next point to add to the hull if next is availabl
+			//while not ccw, pop the top of geometry stack and test the new current with the current construction of hull
+			while( orientation(geometryHull.vertices[geometryHull.vertices.length-1],
+				                         geometryHull.vertices[geometryHull.vertices.length-2],
+																 cur) <=  0){
+				geometryHull.vertices.splice(geometryHull.vertices.length-1,1);
+
+			}			//while orientation is not counterclockwise
+			//current is valid if counter clockwise
+			geometryHull.vertices.push(cur);
+
+		}
+
+		geometryHull.vertices.push(minPt); //wrap line geometry around to beginning
+
+		var lines =  new THREE.Line(geometryLine, new THREE.LineBasicMaterial({color : 0xf3f3f3}));
+		var path =  new THREE.Line(geometryPath, new THREE.LineBasicMaterial({color: 0x6660ff}));
+		var hull =  new THREE.Line(geometryHull, new THREE.LineBasicMaterial({color: 0xe89dd8}));
+		return {lines : lines,
+						path : path,
+					hull: hull};
+		}
+		function orientation(a,b,c){
+		//if return > 0 then counterclockwise
+		//if return < 0 then clockwise
+		//if return == 0 then collinear
+		return (b.x - a.x)*(c.y - a.y) - (b.y - a.y)*(c.x - a.x)
 	}
 	function sortByPolar(a, points){
 		return points.sort(function(b,c){
@@ -297,22 +370,26 @@ function render() {
 		findHull(belowPoints.geometry.vertices,a,b, hullGeometry.vertices);
 
 		//hullGeometry.vertices.push(line.geometry.vertices[1]);
-		var points = new THREE.Points(hullGeometry, new THREE.PointsMaterial({size : 7,color: 0x007f88}));
+		//points that make up convex hull
+		var convexSet = new THREE.Points(hullGeometry, new THREE.PointsMaterial({size : 7,color: 0x007f88}));
 
 		var lineGeometry = new THREE.Geometry();
-			if(points.vertices() != 0){
+			if(convexSet.geometry.vertices.length > 0){
 			//TODO
-			//sort points by polar and get the path taken of the points when traversing
-			var sortedPoints = sortByPolar(points.vertices[0], points.vertices);
+			//find minxy
+			var min = findMinY(convexSet.geometry.vertices);
+			//sort points by polar of min and get the path taken of the points when traversing
+			var sortedPoints = sortByPolar(min.point, convexSet.geometry.vertices);
+			//connect the hull by travelling path of polar sorted points
 			for(var i = 0; i < sortedPoints.length; i++){
-				lineGeometry.push(points[i]);
+				//lineGeometry.vertices.push(sortedPoints[i]);
+				prev = sortedPoints[i];
 			}
-			lineGeometry.push(points[0]); //wrap back around
 		}
 		var lines = new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({color: 0x818333}));
 
 		return {
-			points: points,
+			points: convexSet,
 			lines : lines
 		};
 	}
