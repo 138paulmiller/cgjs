@@ -1,3 +1,7 @@
+#main{
+    overflow: auto;
+}
+
 body {
   padding: 5px;
   font: 14px "Courier"
@@ -23,23 +27,27 @@ canvas {
 
 .dropdown {
     position: relative;
+    overflow: auto;
+
 }
 
 .dropdown-content {
+    overflow:auto;
     z-index: 100;
     position: relative;
     display: none;
     background-color: #59ACA0;
     max-width: 200px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    overflow:auto;
 }
 
-.dropdown:hover, .dropdown:focus .dropdown-content {
+.dropdown:hover .dropdown-content {
     display: block;
 }
-.dropdown:ontouch .dropdown-content {
+
+.dropdown:focus .dropdown-content {
     display: block;
+
 }
 
 .dropdown:hover .dropbtn {

@@ -71,12 +71,14 @@ var sketch = (function (){
 		document.getElementById('grahamScan').addEventListener('click', showGrahamScan);
 		document.getElementById('points').addEventListener('click', getCustomPoints);
 		document.getElementById('pointsrandom').addEventListener('click', getRandomPoints);
+		document.getElementById('toggleAxis').addEventListener('click', toggleAxis);
 
 		document.getElementById('clear').addEventListener('touchstart', clearScene);
 		document.getElementById('quickHull').addEventListener('touchstart', showQuickHull);
 		document.getElementById('grahamScan').addEventListener('touchstart', showGrahamScan);
 		document.getElementById('points').addEventListener('touchstart', getCustomPoints);
 		document.getElementById('pointsrandom').addEventListener('touchstart', getRandomPoints);
+		document.getElementById('toggleAxis').addEventListener('touchstart', toggleAxis);
 
 		//add event listeners to the page
 		window.addEventListener('resize', onWindowResize, false);
@@ -513,5 +515,18 @@ function render() {
 			 mouseY = e.touches[0].pageY - heightHalf;
 	 }
 	}
-
+	function toggleAxis(){
+		if(axis == null){
+			axis = makeAxis(boundaryAxis);
+			scene.add(axis);
+		}else{
+			for (let i = scene.children.length - 1; i >= 0 ; i--) {
+		    let child = scene.children[ i ];
+		    if ( child == axis) { // plane & camera are stored earlier
+		      scene.remove(child);
+		    }
+	  	}
+			axis = null;
+		}
+	}
 });
