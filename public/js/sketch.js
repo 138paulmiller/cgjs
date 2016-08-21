@@ -545,10 +545,9 @@ function render() {
 		var content = document.getElementsByClassName('dropdown-content');
 		for(var i = 0; i < content.length; i++){
 			if(content[i].style.display == 'block'){
-				content[i].style.display == 'none';
+				content[i].style.display = 'none';
 			}else{
-				content[i].style.display == 'block';
-
+				content[i].style.display = 'block';
 			}
 		}
 	}
