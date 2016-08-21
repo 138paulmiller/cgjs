@@ -73,6 +73,8 @@ var sketch = (function (){
 		document.getElementById('points').addEventListener('click', getCustomPoints);
 		document.getElementById('pointsrandom').addEventListener('click', getRandomPoints);
 		document.getElementById('toggleAxis').addEventListener('click', toggleAxis);
+		document.getElementById('delaunayConstruction').addEventListener('click', toggleAxis);
+		document.getElementById('dropbutton').addEventListener('click', toggleDropDownContent);
 
 		document.getElementById('clear').addEventListener('touchstart', clearScene);
 		document.getElementById('quickHull').addEventListener('touchstart', showQuickHull);
@@ -80,6 +82,8 @@ var sketch = (function (){
 		document.getElementById('points').addEventListener('touchstart', getCustomPoints);
 		document.getElementById('pointsrandom').addEventListener('touchstart', getRandomPoints);
 		document.getElementById('toggleAxis').addEventListener('touchstart', toggleAxis);
+		document.getElementById('delaunayConstruction').addEventListener('touchstart', toggleAxis);
+		document.getElementById('dropbutton').addEventListener('touchstart', toggleDropDownContent);
 
 		//add event listeners to the page
 		window.addEventListener('resize', onWindowResize, false);
@@ -271,6 +275,13 @@ function render() {
 		}
 		return {point: points[minIndex],
 						index : minIndex};
+	}
+	function triangulate(points){
+		return delaunayConstruction(points);
+	}
+	function delaunayConstruction(points){
+		//for each pi,pj,pk,pl , a tetrahedron (p) exists
+		//if if no other points are within the sphere located a centroid of tetrahedron
 	}
 	function grahamScan(points){
 		if(!points || points.length < 0){
@@ -528,6 +539,17 @@ function render() {
 		    }
 	  	}
 			axis = null;
+		}
+	}
+	function toggleDropDownContent(){
+		var content = document.getElementsByClassName('dropdown-content');
+		for(var i = 0; i < content.length; i++){
+			if(content[i].style.display == 'block'){
+				content[i].style.display == 'none';
+			}else{
+				content[i].style.display == 'block';
+
+			}
 		}
 	}
 });

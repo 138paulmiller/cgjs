@@ -47,7 +47,6 @@ canvas {
 
 .dropdown:focus .dropdown-content {
     display: block;
-
 }
 
 .dropdown:hover .dropbtn {
