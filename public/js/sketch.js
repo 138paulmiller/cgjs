@@ -10,6 +10,7 @@ var sketch = (function (){
 	var mouseX, mouseY;
 	var pi2;
 	var mouseDown = false;
+	var rotZ = 0;
 
 	var height, width, heightHalf, widthHalf, fieldOfView,aspectRatio,nearPlane, farPlane;
 	init();
@@ -107,6 +108,7 @@ function render() {
 		//loop through rendered objects in scene
 		for (i = 0; i < scene.children.length; i++) {
           var object = scene.children[i];
+					object.rotation.z += rotZ;
           if (object instanceof THREE.Points) {
 						//if object is a points mesh
           }
@@ -212,7 +214,7 @@ function render() {
 		}
 		grahamScanObj = grahamScan(points);
 		scene.add(grahamScanObj.lines);
-		//scene.add(grahamScanObj.path);
+		scene.add(grahamScanObj.path);
 		scene.add(grahamScanObj.hull);
 
 	}
@@ -320,14 +322,14 @@ function render() {
 
 		geometryHull.vertices.push(minPt); //wrap line geometry around to beginning
 
-		var lines =  new THREE.Line(geometryLine, new THREE.LineBasicMaterial({color : 0xf3f3f3}));
+		var lines =  new THREE.Line(geometryLine, new THREE.LineBasicMaterial({color : 0x248f8f}));
 		var path =  new THREE.Line(geometryPath, new THREE.LineBasicMaterial({color: 0x6660ff}));
 		var hull =  new THREE.Line(geometryHull, new THREE.LineBasicMaterial({color: 0xe89dd8}));
 		return {lines : lines,
 						path : path,
 					hull: hull};
 		}
-		function orientation(a,b,c){
+	function orientation(a,b,c){
 		//if return > 0 then counterclockwise
 		//if return < 0 then clockwise
 		//if return == 0 then collinear
@@ -423,10 +425,9 @@ function render() {
 			 var leftOutsidePoint = [];
 			 var rightOutsidePoint = [];
 			 //if inside triangle
-			 // if point is right then x > maxPt.x else left
 			 for (var i = 0; i < points.length; i++){
 				 if(!isInTriangle(points[i], pA,pB, maxPt)){
-					 //if the determinatnt of point if less than zero, on left of line
+					 //if the determinant of point if less than zero, on left of line
 					 if((maxPt.x - pA.x)*(points[i].y - pA.y) - (maxPt.y - pA.y)*(points[i].x - pA.x) > 0){
 						 rightOutsidePoint.push(points[i]);
 					 }else{
