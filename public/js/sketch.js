@@ -537,9 +537,8 @@ function render() {
       }
 	}
 	function onTouchStart(e){
-		if (e.touches.length == 1 ) {
+		if (e.touches.length == 1) {
 			e.preventDefault();
-			alert(e.touches[0].id);
 			 mouseX = e.touches[0].pageX - widthHalf;
 			 mouseY = e.touches[0].pageY - heightHalf;
 	 }
