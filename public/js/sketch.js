@@ -294,14 +294,6 @@ function render() {
 	    new THREE.BoxGeometry( w, h, d ),
 	    new THREE.MeshFaceMaterial({wireframe : true, color: 0xff8888}));
 	}
-	function makeTexturedTetrahedron(x,y,z, size, detail){
-
-		var geometry = new THREE.TetrahedronGeometry(size, detail );
-		geometry.applyMatrix( new THREE.Matrix4().makeTranslation(x, y, z) ); //move, translate, obj
-
-		var imgTexture = new THREE.TextureLoader().load("img/illuminati.png");
-		return new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map : imgTexture}));
-	}
 	function findMinY(points){
 		var minIndex = 0; //find point with smallest y and swap it with points[0]
 		for(var i = 0 ; i< points.length; i++){
@@ -607,15 +599,20 @@ function render() {
 		for (i = 0; i < scene.children.length; i++) {
          if (scene.children[i] instanceof THREE.Points) {
  					//change points size
+					var imgTexture = new THREE.TextureLoader().load("img/illuminati.png");
 					for(var j = 0; j < scene.children[i].geometry.vertices.length;j++){
 	 					var sz = eval(document.getElementById('size').value.toString());
 						var p = scene.children[i].geometry.vertices[j];
-						var tetra = makeTexturedTetrahedron(p.x,p.y,p.z, sz, 20);
+						var geometry = new THREE.TetrahedronGeometry(sz, 2 );
+						var tetra = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map : imgTexture}));
+						tetra.rotation.y += 90;
+						tetra.position.x = p.x;
+						tetra.position.y = p.y;
+						tetra.position.z = p.z;
 	 					scene.add(tetra);
 					}
          }
      }
-		 renderer.render(scene, camera);
 
 	}
 });
