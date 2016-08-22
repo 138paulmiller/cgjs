@@ -73,7 +73,7 @@ var sketch = (function (){
 		document.getElementById('points').addEventListener('click', getCustomPoints);
 		document.getElementById('pointsrandom').addEventListener('click', getRandomPoints);
 		document.getElementById('toggleAxis').addEventListener('click', toggleAxis);
-		document.getElementById('delaunayConstruction').addEventListener('click', toggleAxis);
+		document.getElementById('delaunayConstruction').addEventListener('click', delaunayConstruction);
 		document.getElementById('dropbutton').addEventListener('click', toggleDropDownContent);
 
 		document.getElementById('clear').addEventListener('touchstart', clearScene);
@@ -82,7 +82,7 @@ var sketch = (function (){
 		document.getElementById('points').addEventListener('touchstart', getCustomPoints);
 		document.getElementById('pointsrandom').addEventListener('touchstart', getRandomPoints);
 		document.getElementById('toggleAxis').addEventListener('touchstart', toggleAxis);
-		document.getElementById('delaunayConstruction').addEventListener('touchstart', toggleAxis);
+		document.getElementById('delaunayConstruction').addEventListener('touchstart', delaunayConstruction);
 		document.getElementById('dropbutton').addEventListener('touchstart', toggleDropDownContent);
 
 		//add event listeners to the page
@@ -218,7 +218,7 @@ function render() {
 		}
 		grahamScanObj = grahamScan(points);
 		scene.add(grahamScanObj.lines);
-		scene.add(grahamScanObj.path);
+		//scene.add(grahamScanObj.path);
 		scene.add(grahamScanObj.hull);
 
 	}

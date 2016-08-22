@@ -25,9 +25,9 @@
 			<div style="border:1px solid #940044;">
 			 Parametric pointset<br>
 				t: <input id='a' type='int' size='6' value='100'> <br><br>
-				x(t): <input id='xfunc' type='string' size='20' value='cos(t)*a'> <br>
-				y(t): <input id='yfunc' type='string' size='20' value='sin(t)*a'> <br>
-				z(t): <input id='zfunc' type='string' size='20' value='0'> <br><br>
+				x(t): <input id='xfunc' type='text' size='20' value='cos(t)*a'> <br>
+				y(t): <input id='yfunc' type='text' size='20' value='sin(t)*a'> <br>
+				z(t): <input id='zfunc' type='text' size='20' value='0'> <br><br>
 				tmax:&nbsp;&nbsp;<input id='tmax' type='string' size='6' value='pi*2'> <br>
 				tmin:&nbsp;&nbsp;<input id='tmin' type='string' size='6' value='0'> <br>
 				increment: <input id='increment' type='int' size='6' value='pi/16'> <br><br>
@@ -35,13 +35,13 @@
 			</div>
 			<div style="border:1px solid #940044;">
 				Random pointset<br>
-				x max: <input id='xmax' type='string' size='6' value='100'> <br>
-				x min: <input id='xmin' type='string' size='6' value='-100'> <br><br>
-				y max: <input id='ymax' type='string' size='6' value='100'> <br>
-				y min: <input id='ymin' type='string' size='6' value='-100'> <br><br>
-				z max: <input id='zmax' type='string' size='6' value='0'> <br>
-				z min: <input id='zmin' type='string' size='6' value='0'> <br><br>
-				n: <input id='n' type='int' size='6' value='100'> <br>
+				x max: <input id='xmax' type='number' size='6' value='100'> <br>
+				x min: <input id='xmin' type='number' size='6' value='-100'> <br><br>
+				y max: <input id='ymax' type='number' size='6' value='100'> <br>
+				y min: <input id='ymin' type='number' size='6' value='-100'> <br><br>
+				z max: <input id='zmax' type='number' size='6' value='0'> <br>
+				z min: <input id='zmin' type='number' size='6' value='0'> <br><br>
+				n: <input id='n' type='number' size='6' value='100'> <br>
 			 <button id="pointsrandom" type="button" >Generate Random Points</button><br><br>
 		 </div>
 	 	 <div style="border:1px solid #940044;">
@@ -50,7 +50,6 @@
 			<button id="quickHull" type="button" >QuickHull</button><br>
 			3D algorithms
 			<button id="delaunayConstruction" type="button" >Delaunay</button><br>
-
 		 </div>
 	</div>
 	</div>
