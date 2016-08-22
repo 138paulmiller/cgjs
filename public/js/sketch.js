@@ -10,14 +10,15 @@ var sketch = (function (){
 	var mouseX, mouseY;
 	var pi2;
 	var mouseDown = false;
-	var rotZ = 0;
+	var rotSpeed = 0;
 
 	var height, width, heightHalf, widthHalf, fieldOfView,aspectRatio,nearPlane, farPlane;
 	init();
 	draw();
 
 	function init(){
-		console.log("Sketch function");
+		//init variables
+		console.log("Init Sketch function");
 		height = window.innerHeight;
 		width = window.innerWidth;
 		heightHalf = height/2-50;
@@ -32,6 +33,7 @@ var sketch = (function (){
   	mouseY = 0,
 		pi2 = Math.PI/2;
 
+		//create the scene and camera for the scene
 		scene = new THREE.Scene();
 		camera = new THREE.PerspectiveCamera( fieldOfView, aspectRatio, nearPlane, farPlane );
 		camera.position.x = 100;
@@ -49,7 +51,7 @@ var sketch = (function (){
 		axis = makeAxis(boundaryAxis);
 		scene.add(axis);
 
-		//add the renderer to the constainer element
+		//Create and add the renderer to the constainer element
 		renderer = new THREE.WebGLRenderer();
 		renderer.domElement.style.position = 'absolute';
 		renderer.domElement.style.top = '0px';
@@ -57,8 +59,8 @@ var sketch = (function (){
 		renderer.domElement.style.zindex = '1';
     renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(width, height);
-
     container.appendChild(renderer.domElement);
+
 		//append the statsIndicator element to the top right of the container
 		statsIndicator = new THREEx.RendererStats();
     statsIndicator.domElement.style.position = 'absolute';
@@ -67,6 +69,46 @@ var sketch = (function (){
     container.appendChild(statsIndicator.domElement);
 
 		//add listeners to buttons
+		addEventListeners();
+
+		rotationChange();
+		getRandomPoints(); //by default get random points and display them
+
+	}
+	/*
+		This is the animation (infinite  looping ) function
+	*/
+	function draw(){
+		requestAnimationFrame(draw); //draw is animation call
+		render(); //render three objects
+		//show statsIndicator of computer between renders
+		statsIndicator.update(renderer);
+	}
+/*
+	Repeatedly draws the threejs objectss
+*/
+function render() {
+		camera.position.x += (mouseX - camera.position.x) * .75;
+    camera.position.y += (-mouseY - camera.position.y) * .75;
+
+		//rotate scene
+		scene.rotation.x += rotSpeed;
+		scene.rotation.y += rotSpeed;
+		scene.rotation.z += rotSpeed;
+    camera.lookAt(scene.position);
+		//loop through rendered objects in scene
+		for (i = 0; i < scene.children.length; i++) {
+          var object = scene.children[i];
+					// object.rotation.x += rotSpeed;
+					// object.rotation.y += rotSpeed;
+					// object.rotation.z += rotSpeed;
+          if (object instanceof THREE.Points) {
+						//if object is a points mesh
+          }
+        }
+		renderer.render(scene, camera);
+	}
+	function addEventListeners(){
 		document.getElementById('clear').addEventListener('click', clearScene);
 		document.getElementById('quickHull').addEventListener('click', showQuickHull);
 		document.getElementById('grahamScan').addEventListener('click', showGrahamScan);
@@ -84,40 +126,14 @@ var sketch = (function (){
 		document.getElementById('toggleAxis').addEventListener('touchstart', toggleAxis);
 		document.getElementById('delaunayConstruction').addEventListener('touchstart', delaunayConstruction);
 		document.getElementById('dropbutton').addEventListener('touchstart', toggleDropDownContent);
-
+		document.getElementById('rotSpeed').addEventListener('change',rotationChange);
 		//add event listeners to the page
 		window.addEventListener('resize', onWindowResize, false);
 		document.addEventListener('mousemove', onMouseMove, false);
 		document.addEventListener('mousedown', onMouseDown, false);
 		document.addEventListener('mouseup', onMouseUp, false);
-		document.addEventListener('touchstart', onTouchStart, false); //for mobile
-		document.addEventListener('touchmove', onTouchMove, false); //for mobile
-	}
-	/*
-		This is the animation (infinite  looping ) function
-	*/
-	function draw(){
-		requestAnimationFrame(draw); //draw is animation call
-		render(); //render three objects
-		//show statsIndicator of computer between renders
-		statsIndicator.update(renderer);
-	}
-/*
-	Repeatedly draws the threejs objectss
-*/
-function render() {
-		camera.position.x += (mouseX - camera.position.x) * .75;
-    camera.position.y += (-mouseY - camera.position.y) * .75;
-    camera.lookAt(scene.position);
-		//loop through rendered objects in scene
-		for (i = 0; i < scene.children.length; i++) {
-          var object = scene.children[i];
-					object.rotation.z += rotZ;
-          if (object instanceof THREE.Points) {
-						//if object is a points mesh
-          }
-        }
-		renderer.render(scene, camera);
+		// document.addEventListener('touchstart', onTouchStart, false); //for mobile
+		// document.addEventListener('touchmove', onTouchMove, false); //for mobile
 	}
 	function clearScene(){
 		delete pointsObj;
@@ -550,5 +566,8 @@ function render() {
 				content[i].style.display = 'block';
 			}
 		}
+	}
+	function rotationChange(){
+		rotSpeed = eval(document.getElementById('rotSpeed').value.toString())/1000;
 	}
 });
