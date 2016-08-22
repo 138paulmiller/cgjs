@@ -530,13 +530,14 @@ function render() {
 		mouseDown = false;
 	}
 	function onTouchMove(e){
-    if (e.touches.length === 1) {
+    if (e.touches.length === 1 && e.touches[0] != "dropbutton" &&e.touches[0] != "dropdown-content") {
+
         mouseX = e.touches[0].pageX - widthHalf;
         mouseY = e.touches[0].pageY - heightHalf;
       }
 	}
 	function onTouchStart(e){
-		if (e.touches.length === 1) {
+		if (e.touches.length === 1&& e.touches[0] != "dropbutton" &&e.touches[0] != "dropdown-content") {
 			 mouseX = e.touches[0].pageX - widthHalf;
 			 mouseY = e.touches[0].pageY - heightHalf;
 	 }
