@@ -126,7 +126,7 @@ function render() {
 		document.getElementById('toggleAxis').addEventListener('touchstart', toggleAxis);
 		document.getElementById('delaunayConstruction').addEventListener('touchstart', delaunayConstruction);
 		document.getElementById('dropbutton').addEventListener('touchstart', toggleDropDownContent);
-		document.getElementById('rotSpeed').addEventListener('change',rotationChange);
+		document.getElementById('rotSpeed').addEventListener('submit',rotationChange);
 		//add event listeners to the page
 		window.addEventListener('resize', onWindowResize, false);
 		document.addEventListener('mousemove', onMouseMove, false);
@@ -531,12 +531,15 @@ function render() {
 	}
 	function onTouchMove(e){
     if (e.touches.length === 1 && e.touches[0] != "dropbutton" &&e.touches[0] != "dropdown-content") {
-        mouseX = e.touches[0].pageX - widthHalf;
+			e.preventDefault();
+				mouseX = e.touches[0].pageX - widthHalf;
         mouseY = e.touches[0].pageY - heightHalf;
       }
 	}
 	function onTouchStart(e){
-		if (e.touches.length === 1 && e.touches[0] != "dropbutton" &&e.touches[0] != "dropdown-content") {
+		if (e.touches.length === 1) {
+			e.preventDefault();
+			alert(e.touches[0]);
 			 mouseX = e.touches[0].pageX - widthHalf;
 			 mouseY = e.touches[0].pageY - heightHalf;
 	 }
@@ -563,12 +566,16 @@ function render() {
 					content[i].style.display = 'none';
 			}
 			menu.innerHtml='Hide';
+			alert("toggle hide");
+
 		}else{
 			var content = document.getElementsByClassName('dropdown-content');
 			for(var i = 0; i < content.length; i++){
 					content[i].style.display = 'block';
 			}
 			menu.innerHtml='Menu';
+			alert("toggle show");
+
 		}
 	}
 	function rotationChange(){
