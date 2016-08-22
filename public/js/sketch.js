@@ -132,8 +132,8 @@ function render() {
 		document.addEventListener('mousemove', onMouseMove, false);
 		document.addEventListener('mousedown', onMouseDown, false);
 		document.addEventListener('mouseup', onMouseUp, false);
-		// document.addEventListener('touchstart', onTouchStart, false); //for mobile
-		// document.addEventListener('touchmove', onTouchMove, false); //for mobile
+		document.addEventListener('touchstart', onTouchStart, false); //for mobile
+		document.addEventListener('touchmove', onTouchMove, false); //for mobile
 	}
 	function clearScene(){
 		delete pointsObj;
@@ -531,14 +531,12 @@ function render() {
 	}
 	function onTouchMove(e){
     if (e.touches.length === 1) {
-			e.preventDefault();
         mouseX = e.touches[0].pageX - widthHalf;
         mouseY = e.touches[0].pageY - heightHalf;
       }
 	}
 	function onTouchStart(e){
 		if (e.touches.length === 1) {
-			 e.preventDefault();
 			 mouseX = e.touches[0].pageX - widthHalf;
 			 mouseY = e.touches[0].pageY - heightHalf;
 	 }
