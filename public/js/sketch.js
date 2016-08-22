@@ -132,7 +132,7 @@ function render() {
 		document.addEventListener('mousemove', onMouseMove, false);
 		document.addEventListener('mousedown', onMouseDown, false);
 		document.addEventListener('mouseup', onMouseUp, false);
-		document.addEventListener('touchstart', onTouchStart, false); //for mobile
+		//document.addEventListener('touchstart', onTouchStart, false); //for mobile
 		document.addEventListener('touchmove', onTouchMove, false); //for mobile
 	}
 	function clearScene(){
@@ -531,13 +531,12 @@ function render() {
 	}
 	function onTouchMove(e){
     if (e.touches.length === 1 && e.touches[0] != "dropbutton" &&e.touches[0] != "dropdown-content") {
-
         mouseX = e.touches[0].pageX - widthHalf;
         mouseY = e.touches[0].pageY - heightHalf;
       }
 	}
 	function onTouchStart(e){
-		if (e.touches.length === 1&& e.touches[0] != "dropbutton" &&e.touches[0] != "dropdown-content") {
+		if (e.touches.length === 1 && e.touches[0] != "dropbutton" &&e.touches[0] != "dropdown-content") {
 			 mouseX = e.touches[0].pageX - widthHalf;
 			 mouseY = e.touches[0].pageY - heightHalf;
 	 }
