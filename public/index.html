@@ -20,9 +20,13 @@
 	  <div class="dropdown-content">
 			<div style="border:1px solid #940044;">
 			Point size: <input id='size' style='width:30px;' type='number' size='3' value='5'><br>
-			Rotation Speed: <input id='rotSpeed' style='width:30px;' type='number' size='3' value='2'><br>
+			Rotation Speeds<br>
+			X: <input id='rotX' style='width:30px;' type='number' size='3' value='2'>
+			Y: <input id='rotY' style='width:30px;' type='number' size='3' value='2'><br>
+			Z: <input id='rotZ' style='width:30px;' type='number' size='3' value='2'><br><br>
 			<button id='toggleAxis'>Toggle Axis<br>
 			<button id="clear" type="button" >Clear</button>
+			<button id="showImage" type="button">Image</button>
 			</div>
 			<div style="border:1px solid #940044;">
 			 Parametric pointset<br>
@@ -31,7 +35,7 @@
 				t max:&nbsp;&nbsp;<input id='tmin' style='width:60px;' type='string' size='6' value='0'> <br>
 				x(t): <input id='xfunc' type='text' size='30' value='cos(t)*r'> <br>
 				y(t): <input id='yfunc' type='text' size='30' value='sin(t)*r'> <br>
-				z(t): <input id='zfunc' type='text' size='30' value='0'> <br><br>
+				z(t): <input id='zfunc' type='text' size='30' value='1'> <br><br>
 				increment: <input id='increment' type='int' size='6' value='pi/16'> <br><br>
 				<button id="points" type="button" >Generate Parametric Points </button><br><br>
 			</div>

@@ -6,11 +6,12 @@
 var sketch = (function (){
 	var scene, axis, camera, renderer;
 	var pointSet, pointsObj, grahamScanObj, quickHullObj;
+	var tetrahedrons = [];
 	var statsIndicator;
 	var mouseX, mouseY;
 	var pi2;
 	var mouseDown = false;
-	var rotSpeed = 0;
+	var rotX, rotY, rotZ = 0;
 
 	var height, width, heightHalf, widthHalf, fieldOfView,aspectRatio,nearPlane, farPlane;
 	init();
@@ -92,9 +93,9 @@ function render() {
     camera.position.y += (-mouseY - camera.position.y) * .75;
 
 		//rotate scene
-		scene.rotation.x += rotSpeed;
-		scene.rotation.y += rotSpeed;
-		scene.rotation.z += rotSpeed;
+		scene.rotation.x += rotX;
+		scene.rotation.y += rotY;
+		scene.rotation.z += rotZ;
     camera.lookAt(scene.position);
 		//loop through rendered objects in scene
 		for (i = 0; i < scene.children.length; i++) {
@@ -117,6 +118,7 @@ function render() {
 		document.getElementById('toggleAxis').addEventListener('click', toggleAxis);
 		document.getElementById('delaunayConstruction').addEventListener('click', delaunayConstruction);
 		document.getElementById('dropbutton').addEventListener('click', toggleDropDownContent);
+		document.getElementById('showImage').addEventListener('click', loadTextureOnPoints);
 
 		document.getElementById('clear').addEventListener('touchstart', clearScene);
 		document.getElementById('quickHull').addEventListener('touchstart', showQuickHull);
@@ -126,8 +128,17 @@ function render() {
 		document.getElementById('toggleAxis').addEventListener('touchstart', toggleAxis);
 		document.getElementById('delaunayConstruction').addEventListener('touchstart', delaunayConstruction);
 		document.getElementById('dropbutton').addEventListener('touchstart', toggleDropDownContent);
-		document.getElementById('rotSpeed').addEventListener('submit',rotationChange);
+		document.getElementById('showImage').addEventListener('touchstart', loadTextureOnPoints);
+
+		document.getElementById('rotX').addEventListener('change',rotationChange);
+		document.getElementById('rotY').addEventListener('change',rotationChange);
+		document.getElementById('rotZ').addEventListener('change',rotationChange);
 		document.getElementById('size').addEventListener('change', changePointSize);
+
+		document.getElementById('rotX').addEventListener('submit',rotationChange);
+		document.getElementById('rotY').addEventListener('submit',rotationChange);
+		document.getElementById('rotZ').addEventListener('submit',rotationChange);
+		document.getElementById('size').addEventListener('submit', changePointSize);
 
 		//add event listeners to the page
 		window.addEventListener('resize', onWindowResize, false);
@@ -170,7 +181,6 @@ function render() {
 		for(var i = 0; i < pointsObj.geometry.vertices.length; i++){
 			pointSet.push(pointsObj.geometry.vertices[i]);
 		}
-
 	}
 	function getCustomPoints(){
 			var sz = document.getElementById("size").value;
@@ -275,7 +285,7 @@ function render() {
 			var vec = new THREE.Vector3(pt[0], pt[1],pt[2]);
 			geometry.vertices.push(vec);
 		}
-		var points = new THREE.Points( geometry, new THREE.PointsMaterial( {size: sz /*,	map : new THREE.TextureLoader().load('images/illuminati.png')*/}));
+		var points = new THREE.Points( geometry, new THREE.PointsMaterial( {size: sz}));
 		return points; //add to scene
 	}
 
@@ -283,6 +293,14 @@ function render() {
 		return new THREE.Mesh(
 	    new THREE.BoxGeometry( w, h, d ),
 	    new THREE.MeshFaceMaterial({wireframe : true, color: 0xff8888}));
+	}
+	function makeTexturedTetrahedron(x,y,z, size, detail){
+
+		var geometry = new THREE.TetrahedronGeometry(size, detail );
+		geometry.applyMatrix( new THREE.Matrix4().makeTranslation(x, y, z) ); //move, translate, obj
+
+		var imgTexture = new THREE.TextureLoader().load("img/illuminati.png");
+		return new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map : imgTexture}));
 	}
 	function findMinY(points){
 		var minIndex = 0; //find point with smallest y and swap it with points[0]
@@ -570,17 +588,34 @@ function render() {
 		}
 	}
 	function rotationChange(){
-		rotSpeed = eval(document.getElementById('rotSpeed').value.toString())/1000;
+		rotX = eval(document.getElementById('rotX').value.toString())/100;
+		rotY = eval(document.getElementById('rotY').value.toString())/100;
+		rotZ = eval(document.getElementById('rotZ').value.toString())/100;
+
 	}
 	function changePointSize(){
-		new function(){ for (i = 0; i < scene.children.length; i++) {
-          if (scene.children[i] instanceof THREE.Points) {
-						//change points size
-						var sz = eval(document.getElementById('size').value.toString());
-						scene.children[i].material = new THREE.PointsMaterial({ size : sz});
-						renderer.render(scene, camera);
-          }
+	 for (i = 0; i < scene.children.length; i++) {
+        if (scene.children[i] instanceof THREE.Points) {
+					//change points size
+					var sz = eval(document.getElementById('size').value.toString());
+					scene.children[i].material = new THREE.PointsMaterial({ size : sz});
+					renderer.render(scene, camera);
         }
-			}
+    }
+	}
+	function loadTextureOnPoints(){
+		for (i = 0; i < scene.children.length; i++) {
+         if (scene.children[i] instanceof THREE.Points) {
+ 					//change points size
+					for(var j = 0; j < scene.children[i].geometry.vertices.length;j++){
+	 					var sz = eval(document.getElementById('size').value.toString());
+						var p = scene.children[i].geometry.vertices[j];
+						var tetra = makeTexturedTetrahedron(p.x,p.y,p.z, sz, 20);
+	 					scene.add(tetra);
+					}
+         }
+     }
+		 renderer.render(scene, camera);
+
 	}
 });
