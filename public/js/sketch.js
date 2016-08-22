@@ -515,12 +515,14 @@ function render() {
 	}
 	function onTouchMove(e){
     if (e.touches.length === 1) {
+			e.preventDefault();
         mouseX = e.touches[0].pageX - widthHalf;
         mouseY = e.touches[0].pageY - heightHalf;
       }
 	}
 	function onTouchStart(e){
 		if (e.touches.length === 1) {
+			 e.preventDefault();
 			 mouseX = e.touches[0].pageX - widthHalf;
 			 mouseY = e.touches[0].pageY - heightHalf;
 	 }
