@@ -6,7 +6,9 @@ var express = require('express'),
 var app = express();
 
 require('./config/express')(app, config);
-
+app.use('/img',express.static(path.join(__dirname, 'public/images')));
+app.use('/js',express.static(path.join(__dirname, 'public/javascripts')));
+app.use('/css',express.static(path.join(__dirname, 'public/stylesheets')));
 app.get('/',function(req,res){
   res.sendFile(path.resolve('public/index.html'));
 });

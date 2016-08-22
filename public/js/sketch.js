@@ -127,6 +127,8 @@ function render() {
 		document.getElementById('delaunayConstruction').addEventListener('touchstart', delaunayConstruction);
 		document.getElementById('dropbutton').addEventListener('touchstart', toggleDropDownContent);
 		document.getElementById('rotSpeed').addEventListener('submit',rotationChange);
+		document.getElementById('size').addEventListener('change', changePointSize);
+
 		//add event listeners to the page
 		window.addEventListener('resize', onWindowResize, false);
 		document.addEventListener('mousemove', onMouseMove, false);
@@ -172,7 +174,7 @@ function render() {
 	}
 	function getCustomPoints(){
 			var sz = document.getElementById("size").value;
-			var a = new String(document.getElementById("a").value.toString());
+			var r = new String(document.getElementById("r").value.toString());
 			var xmax = new String(document.getElementById("xmax").value.toString());
 			var xmin = new String(document.getElementById("xmin").value.toString());
 			var ymax = new String(document.getElementById("ymax").value.toString());
@@ -273,7 +275,7 @@ function render() {
 			var vec = new THREE.Vector3(pt[0], pt[1],pt[2]);
 			geometry.vertices.push(vec);
 		}
-		var points = new THREE.Points( geometry, new THREE.PointsMaterial( {size: sz}));
+		var points = new THREE.Points( geometry, new THREE.PointsMaterial( {size: sz /*,	map : new THREE.TextureLoader().load('images/illuminati.png')*/}));
 		return points; //add to scene
 	}
 
@@ -569,5 +571,16 @@ function render() {
 	}
 	function rotationChange(){
 		rotSpeed = eval(document.getElementById('rotSpeed').value.toString())/1000;
+	}
+	function changePointSize(){
+		new function(){ for (i = 0; i < scene.children.length; i++) {
+          if (scene.children[i] instanceof THREE.Points) {
+						//change points size
+						var sz = eval(document.getElementById('size').value.toString());
+						scene.children[i].material = new THREE.PointsMaterial({ size : sz});
+						renderer.render(scene, camera);
+          }
+        }
+			}
 	}
 });
