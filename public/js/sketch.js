@@ -132,7 +132,7 @@ function render() {
 		document.addEventListener('mousemove', onMouseMove, false);
 		document.addEventListener('mousedown', onMouseDown, false);
 		document.addEventListener('mouseup', onMouseUp, false);
-		//document.addEventListener('touchstart', onTouchStart, false); //for mobile
+		document.addEventListener('touchstart', onTouchStart, false); //for mobile
 		document.addEventListener('touchmove', onTouchMove, false); //for mobile
 	}
 	function clearScene(){
@@ -530,14 +530,14 @@ function render() {
 		mouseDown = false;
 	}
 	function onTouchMove(e){
-    if (e.touches.length === 1 && e.touches[0] != "dropbutton" &&e.touches[0] != "dropdown-content") {
+    if (e.touches.length === 1 && e.touches[0].id != 'dropbutton' ) {
 			e.preventDefault();
 				mouseX = e.touches[0].pageX - widthHalf;
         mouseY = e.touches[0].pageY - heightHalf;
       }
 	}
 	function onTouchStart(e){
-		if (e.touches.length == 1) {
+		if (e.touches.length == 1 && e.touches[0].id != 'dropbutton') {
 			e.preventDefault();
 			alert(e.touches[0]);
 			 mouseX = e.touches[0].pageX - widthHalf;
@@ -559,23 +559,13 @@ function render() {
 		}
 	}
 	function toggleDropDownContent(){
-		var menu = document.getElementById('dropbutton');
-		if(	menu.innerHtml=='Menu'){
-			var content = document.getElementsByClassName('dropdown-content');
-			for(var i = 0; i < content.length; i++){
+		var content = document.getElementsByClassName('dropdown-content');
+		for(var i = 0; i < content.length; i++){
+				if(content[i].style.display == 'block'){
 					content[i].style.display = 'none';
-			}
-			menu.innerHtml='Hide';
-			alert("toggle hide");
-
-		}else if (menu.innerHtml=='Hide'){
-			var content = document.getElementsByClassName('dropdown-content');
-			for(var i = 0; i < content.length; i++){
+				} else{
 					content[i].style.display = 'block';
-			}
-			menu.innerHtml='Menu';
-			alert("toggle show");
-
+				}
 		}
 	}
 	function rotationChange(){
