@@ -537,7 +537,7 @@ function render() {
       }
 	}
 	function onTouchStart(e){
-		if (e.touches.length === 1) {
+		if (e.touches.length == 1) {
 			e.preventDefault();
 			alert(e.touches[0]);
 			 mouseX = e.touches[0].pageX - widthHalf;
@@ -568,7 +568,7 @@ function render() {
 			menu.innerHtml='Hide';
 			alert("toggle hide");
 
-		}else{
+		}else if (menu.innerHtml=='Hide'){
 			var content = document.getElementsByClassName('dropdown-content');
 			for(var i = 0; i < content.length; i++){
 					content[i].style.display = 'block';
