@@ -562,13 +562,13 @@ function render() {
 			for(var i = 0; i < content.length; i++){
 					content[i].style.display = 'none';
 			}
-			menu.innerHtml=='Hide';
+			menu.innerHtml='Hide';
 		}else{
 			var content = document.getElementsByClassName('dropdown-content');
 			for(var i = 0; i < content.length; i++){
 					content[i].style.display = 'block';
 			}
-			menu.innerHtml=='Menu';
+			menu.innerHtml='Menu';
 		}
 	}
 	function rotationChange(){
