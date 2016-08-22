@@ -12,6 +12,7 @@ var sketch = (function (){
 	var pi2;
 	var mouseDown = false;
 	var rotX, rotY, rotZ = 0;
+	var pointsShow;
 
 	var height, width, heightHalf, widthHalf, fieldOfView,aspectRatio,nearPlane, farPlane;
 	init();
@@ -116,9 +117,11 @@ function render() {
 		document.getElementById('points').addEventListener('click', getCustomPoints);
 		document.getElementById('pointsrandom').addEventListener('click', getRandomPoints);
 		document.getElementById('toggleAxis').addEventListener('click', toggleAxis);
+		document.getElementById('togglePoints').addEventListener('click', togglePoints);
 		document.getElementById('delaunayConstruction').addEventListener('click', delaunayConstruction);
 		document.getElementById('dropbutton').addEventListener('click', toggleDropDownContent);
-		document.getElementById('showImage').addEventListener('click', loadTextureOnPoints);
+		document.getElementById('texturePoints').addEventListener('click', loadTextureOnPoints);
+		document.getElementById('showMesh').addEventListener('click', loadMesh);
 
 		document.getElementById('clear').addEventListener('touchstart', clearScene);
 		document.getElementById('quickHull').addEventListener('touchstart', showQuickHull);
@@ -126,9 +129,11 @@ function render() {
 		document.getElementById('points').addEventListener('touchstart', getCustomPoints);
 		document.getElementById('pointsrandom').addEventListener('touchstart', getRandomPoints);
 		document.getElementById('toggleAxis').addEventListener('touchstart', toggleAxis);
+		document.getElementById('togglePoints').addEventListener('touchstart', togglePoints);
 		document.getElementById('delaunayConstruction').addEventListener('touchstart', delaunayConstruction);
 		document.getElementById('dropbutton').addEventListener('touchstart', toggleDropDownContent);
-		document.getElementById('showImage').addEventListener('touchstart', loadTextureOnPoints);
+		document.getElementById('showMesh').addEventListener('touchstart', loadMesh);
+		document.getElementById('texturePoints').addEventListener('touchstart', loadTextureOnPoints);
 
 		document.getElementById('rotX').addEventListener('change',rotationChange);
 		document.getElementById('rotY').addEventListener('change',rotationChange);
@@ -177,6 +182,7 @@ function render() {
 		pointsObj = makeParametricPoints(sz, 1, n, 0, x,y,z);
 		clearScene();
 		scene.add(pointsObj);
+		pointsShow=true;
 		pointSet = [];
 		for(var i = 0; i < pointsObj.geometry.vertices.length; i++){
 			pointSet.push(pointsObj.geometry.vertices[i]);
@@ -224,6 +230,8 @@ function render() {
 
 			pointsObj = makeParametricPoints(sz, increment, tmax, tmin, x,y,z);
 			scene.add(pointsObj);
+			pointsShow=true;
+
 			pointSet = [];
 			for(var i = 0; i < pointsObj.geometry.vertices.length; i++){
 				pointSet.push(pointsObj.geometry.vertices[i]);
@@ -569,6 +577,21 @@ function render() {
 			axis = null;
 		}
 	}
+	function togglePoints(){
+		if(	pointsShow !=true){
+			scene.add(pointsObj);
+			pointsShow  = true;
+
+		}else{
+			for (let i = scene.children.length - 1; i >= 0 ; i--) {
+		    let child = scene.children[ i ];
+		    if ( child == pointsObj) { // plane & camera are stored earlier
+		      scene.remove(child);
+		    }
+	  	}
+			pointsShow  = false;
+		}
+	}
 	function toggleDropDownContent(){
 		var content = document.getElementsByClassName('dropdown-content');
 		for(var i = 0; i < content.length; i++){
@@ -599,12 +622,15 @@ function render() {
 		for (i = 0; i < scene.children.length; i++) {
          if (scene.children[i] instanceof THREE.Points) {
  					//change points size
+					var sz = eval(document.getElementById('size').value.toString());
 					var imgTexture = new THREE.TextureLoader().load("img/illuminati.png");
+					imgTexture.offset.x = sz/100;
+					imgTexture.offset.y = sz/100;
 					for(var j = 0; j < scene.children[i].geometry.vertices.length;j++){
-	 					var sz = eval(document.getElementById('size').value.toString());
 						var p = scene.children[i].geometry.vertices[j];
-						var geometry = new THREE.TetrahedronGeometry(sz, 2 );
-						var tetra = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map : imgTexture}));
+						var geometry = new THREE.PlaneGeometry(sz, sz );
+
+						var tetra = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({side: THREE.DoubleSide, map : imgTexture, vertexColors:THREE.FaceColors}));
 						tetra.rotation.y += 90;
 						tetra.position.x = p.x;
 						tetra.position.y = p.y;
@@ -615,4 +641,13 @@ function render() {
      }
 
 	}
+	function loadMesh(){
+
+		var imgTexture = new THREE.TextureLoader().load("img/illuminati.png");
+		var geometry = new THREE.TetrahedronGeometry(150, 1);
+		var material = new THREE.MeshNormalMaterial({ morphTargets: true, wireframe: true, shading: THREE.FlatShading });
+		tetra = new THREE.Mesh(geometry, material);
+		scene.add(tetra);
+	}
+
 });
