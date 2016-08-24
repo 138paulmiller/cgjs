@@ -10,8 +10,9 @@ require('./config/express')(app, config);
 app.get('/',function(req,res){
   res.sendFile(path.resolve('public/index.html'));
 });
-app.get('/public/img',function(req,res){
-  res.sendFile(path.resolve('public/img'));
+
+app.get('/public/',function(req,res){
+  res.sendFile(path.resolve('public/'));
 });
 app.listen(config.port, function () {
   console.log('Express server listening on port ' + config.port);

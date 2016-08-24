@@ -3,7 +3,7 @@
 -paul miller
 138paulmiller@gmail.com
 */
-var sketch = (function (){
+var sketch = function (){
 	var scene, axis, camera, renderer;
 	var pointSet, pointsObj, grahamScanObj, quickHullObj;
 	var tetrahedrons = [];
@@ -15,8 +15,9 @@ var sketch = (function (){
 	var pointsShow;
 
 	var height, width, heightHalf, widthHalf, fieldOfView,aspectRatio,nearPlane, farPlane;
-	init();
-	draw();
+
+		init();
+		draw();
 
 	function init(){
 		//init variables
@@ -180,7 +181,7 @@ function render() {
 		var y = function(t){return eval( yfunc.toString()); };
 		var z = function(t){return eval(zfunc.toString()); };
 		pointsObj = makeParametricPoints(sz, 1, n, 0, x,y,z);
-		clearScene();
+//		clearScene();
 		scene.add(pointsObj);
 		pointsShow=true;
 		pointSet = [];
@@ -226,7 +227,7 @@ function render() {
 			 var y = function(t){return eval( yfunc.toString()); };
 			 var z = function(t){return eval(zfunc.toString()); };
 
-			clearScene();
+		//	clearScene();
 
 			pointsObj = makeParametricPoints(sz, increment, tmax, tmin, x,y,z);
 			scene.add(pointsObj);
@@ -628,9 +629,9 @@ function render() {
 					imgTexture.offset.y = sz/100;
 					for(var j = 0; j < scene.children[i].geometry.vertices.length;j++){
 						var p = scene.children[i].geometry.vertices[j];
-						var geometry = new THREE.PlaneGeometry(sz, sz );
-
-						var tetra = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({side: THREE.DoubleSide, map : imgTexture, vertexColors:THREE.FaceColors}));
+						var geometry = new THREE.TetrahedronGeometry(sz);
+						var mat = new THREE.MeshBasicMaterial({side: THREE.DoubleSide, map : imgTexture, vertexColors:THREE.FaceColors});
+						var tetra = new THREE.Mesh(geometry, mat);
 						tetra.rotation.y += 90;
 						tetra.position.x = p.x;
 						tetra.position.y = p.y;
@@ -639,15 +640,12 @@ function render() {
 					}
          }
      }
-
 	}
 	function loadMesh(){
-
 		var imgTexture = new THREE.TextureLoader().load("img/illuminati.png");
 		var geometry = new THREE.TetrahedronGeometry(150, 1);
 		var material = new THREE.MeshNormalMaterial({ morphTargets: true, wireframe: true, shading: THREE.FlatShading });
 		tetra = new THREE.Mesh(geometry, material);
 		scene.add(tetra);
 	}
-
-});
+};
