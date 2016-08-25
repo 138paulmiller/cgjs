@@ -3,7 +3,9 @@
 -paul miller
 138paulmiller@gmail.com
 */
+
 var drawer = function(){
+
   var object = {};
   var sceneMap = {};
 	var statsIndicator;
@@ -14,6 +16,13 @@ var drawer = function(){
 	var pointsShow;
 	var height, width, heightHalf, widthHalf, fieldOfView,aspectRatio,nearPlane, farPlane;
   var clock = 0;
+
+
+  init();
+  run();
+
+
+
 	function init(){
 		//init variables
 		console.log("Init Sketch function");
@@ -23,9 +32,9 @@ var drawer = function(){
 		widthHalf = width/2-50;
 		fieldOfView = 60;
 		aspectRatio = width / height;
-		nearPlane = 10;
-		farPlane = 800;
-		cameraZ = 400;
+		nearPlane = 1;
+		farPlane = 1000;
+		cameraZ = 300;
 		boundaryAxis = heightHalf-50;
 		mouseX = 0,
   	mouseY = 0,
@@ -76,40 +85,22 @@ var drawer = function(){
 */
 function render() {
 		//rotate scene
+
     camera.lookAt(scene.position);
 		//loop through rendered objects in scene
 		for (i = 0; i < scene.children.length; i++) {
           var object = scene.children[i];
-					// object.rotation.x += rotX;
-					// object.rotation.y += rotY;
-					// object.rotation.z += rotZ;
+					//  object.rotation.x += 0.02;
+					//  object.rotation.y += 0.01;
           if (object instanceof THREE.Points) {
 						//if object is a points mesh
-            var deg = 0;
-            var to = 100;
-            var inc = Math.PI/16;
-            var xbound = 500;
-            var ybound = 500;
-            var zbound = 200;
-
-            for(var j = 0; j  < object.geometry.vertices.length; j++){
-              object.geometry.vertices[j].x += (Math.cos(deg));
-              object.geometry.vertices[j].y += (Math.sin(deg));
-              object.geometry.vertices[j].z += (Math.sin(deg/16));
-
-              object.geometry.vertices[j].x %= xbound;
-              object.geometry.vertices[j].y %= ybound;
-              object.geometry.vertices[j].z %= zbound;
-
-              deg += inc;
-              deg %= to;
-            }
-            object.geometry.verticesNeedUpdate = true;
-
+            object.update();
           }
         }
 
 		renderer.render(scene, camera);
+
+
     clock+=.01;
     clock%=100;
 	}
@@ -165,10 +156,6 @@ function render() {
 			 mouseY = e.touches[0].pageY - heightHalf;
 	 }
 	}
-  object.start = function(){
-    init();
-		run();
-  };
 
   object.addObject = function(object, id){
     scene.add(object);

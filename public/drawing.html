@@ -10,6 +10,7 @@
    <script src="js/draw.js" ></script>
    <script src="js/points.js" ></script>
 
+
    <title>Draw138</title>
 
  </head>
@@ -18,10 +19,11 @@
    var d= drawer(); //create drawing object
    var p = points(); //factory for points
    var r = 100;
-   var x = function(t) {return Math.random()*r};
-   d.start();
-   d.addObject(p.makePoints(1000, 2, x,x,x));
-   d.addObject(p.makePoints(1000, 1, x,x,x));
+   var x = function(t) {return Math.random()*r;};
+   var xVel = function(t) {return Math.sin(t);};
+
+   //d.addObject(p.makePoints(1000, 2, x2,x2,x2));
+  d.addObject(p.makePoints(50, 5, x,x,x, xVel, xVel, xVel), "p1");
 
    </script>
  </body>
