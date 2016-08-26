@@ -34,14 +34,13 @@ var points = function(){
           this.geometry.vertices[j].z += this.geometry.vertices[j].velocity[2];
           if(this.geometry.reflect){
               if(this.geometry.vertices[j].x  > this.geometry.range[1] || this.geometry.vertices[j].x  < this.geometry.range[0]){
-                this.geometry.vertices[j].x %= this.geometry.range[1]*2 + this.geometry.range[0];
-               }
+                  this.geometry.vertices[j].velocity[0] *= -1.0;
+              }
               if(this.geometry.vertices[j].y  > this.geometry.range[1] || this.geometry.vertices[j].y  < this.geometry.range[0]){
-                this.geometry.vertices[j].y %= this.geometry.range[1]*2 + this.geometry.range[0];
-
+                this.geometry.vertices[j].velocity[1] *= -1.0;
               }
               if(this.geometry.vertices[j].z  > this.geometry.range[1] || this.geometry.vertices[j].z  < this.geometry.range[0]){
-                this.geometry.vertices[j].z %= this.geometry.range[1]*2 + this.geometry.range[0];
+                this.geometry.vertices[j].velocity[2] *= -1.0;
               }
           }
         }//if draw
@@ -51,6 +50,22 @@ var points = function(){
     };
     pointsObj.update();
     return pointsObj;
+  }
+  object.makeParametricPoints = function(n, sz, x,y,z, inc){
+    var geometry = new THREE.Geometry();
+    var t = 0;
+    var v;
+    for(var i = 0 ; i < n; i++){
+      v = new THREE.Vector3(x(t), y(t), z(t));
+      geometry.vertices.push(v);
+      geometry.colors.push(new THREE.Color(Math.random()*t,Math.random(),Math.random()));
+      t+= inc;
+    }
+    geometry.dynamic = false;
+    var pointsObj = new THREE.Points(geometry, new THREE.PointsMaterial({vertexColor : THREE.vertexColor}));
+    pointsObj.update = function(){};
+    return pointsObj;
   };
+
   return object;
 };
