@@ -23,9 +23,9 @@
    var y = function(t) {return Math.sqrt(t)*Math.cos(t*2)*r;};
    var z = function(t) {return Math.sqrt(t)*Math.sin(t*2)*r;};
 
-   var xVel = function(t) {return 0;};
-   var yVel = function(t) {return 0;};
-   var zVel = function(t) {return 0;};
+   var xVel = function(t) {return Math.sin(t);};
+   var yVel = function(t) {return Math.sin(t);};
+   var zVel = function(t) {return Math.sin(t);};
 
    var xRange=[-100,100], yRange=[-100,100], zRange=[-100,100];
 

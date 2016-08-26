@@ -7,7 +7,7 @@ var points = function(){
 
     for(var i = 0 ; i < n; i++){
       geometry.vertices.push(new THREE.Vector3(x(t), y(t), z(t)));
-      geometry.colors.push(new THREE.Color((Math.sin(Math.sin(i))*255), (Math.cos(Math.cos(i))*255), (Math.cos(Math.cos(i))*255)));
+      geometry.colors.push(new THREE.Color((Math.sin(Math.sin(i))*255), (Math.cos(Math.cos(i))*255), (Math.sin(Math.sin(i))*255)));
       t+= inc;
     }
     geometry.parametrics = [x, y, z];
@@ -25,15 +25,14 @@ var points = function(){
         this.geometry.vertices[j].y += this.geometry.velocity[1](t);
         this.geometry.vertices[j].z += this.geometry.velocity[2](t);
 
-        if(this.geometry.vertices[j].x  >= this.geometry.xRange[1] || this.geometry.vertices[j].x  <= this.geometry.xRange[0]){
+        if(this.geometry.vertices[j].x  > this.geometry.xRange[1] || this.geometry.vertices[j].x  < this.geometry.xRange[0]){
+        if(this.geometry.vertices[j].y  > this.geometry.yRange[1] || this.geometry.vertices[j].y  < this.geometry.yRange[0]){
+        if(this.geometry.vertices[j].z  > this.geometry.zRange[1] || this.geometry.vertices[j].z  < this.geometry.zRange[0]){
           this.geometry.vertices[j].x = this.geometry.parametrics[0](t);
+          this.geometry.vertices[j].y = this.geometry.parametrics[1](t);
+          this.geometry.vertices[j].z = this.geometry.parametrics[2](t);
         }
-        if(this.geometry.vertices[j].y  >= this.geometry.yRange[1] || this.geometry.vertices[j].y  <= this.geometry.yRange[0]){
-            this.geometry.vertices[j].y = this.geometry.parametrics[1](t);
-        }
-        if(this.geometry.vertices[j].z  >= this.geometry.zRange[1] || this.geometry.vertices[j].z  <= this.geometry.zRange[0]){
-              this.geometry.vertices[j].z = this.geometry.parametrics[2](t);
-        }
+      }}
 
         t+=this.geometry.increment;
       }
