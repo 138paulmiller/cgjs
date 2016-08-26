@@ -18,12 +18,18 @@
    <script>
    var d= drawer(); //create drawing object
    var p = points(); //factory for points
-   var r = 100;
-   var x = function(t) {return Math.random()*r;};
-   var xVel = function(t) {return Math.sin(t);};
+   var r = 10;
+   var x = function(t) {return Math.sqrt(t)*Math.sin(t)*r;};
+   var y = function(t) {return Math.sqrt(t)*Math.cos(t*2)*r;};
+   var z = function(t) {return Math.sqrt(t)*Math.sin(t*2)*r;};
 
-   //d.addObject(p.makePoints(1000, 2, x2,x2,x2));
-  d.addObject(p.makePoints(50, 5, x,x,x, xVel, xVel, xVel), "p1");
+   var xVel = function(t) {return 0;};
+   var yVel = function(t) {return 0;};
+   var zVel = function(t) {return 0;};
+
+   var xRange=[-100,100], yRange=[-100,100], zRange=[-100,100];
+
+  d.addObject(p.makePoints(1000, 5, x,y,z, xVel, yVel, zVel, xRange, yRange, zRange), "p1");
 
    </script>
  </body>

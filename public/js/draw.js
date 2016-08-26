@@ -91,7 +91,7 @@ function render() {
 		for (i = 0; i < scene.children.length; i++) {
           var object = scene.children[i];
 					//  object.rotation.x += 0.02;
-					//  object.rotation.y += 0.01;
+					 object.rotation.y += 0.01;
           if (object instanceof THREE.Points) {
 						//if object is a points mesh
             object.update();
