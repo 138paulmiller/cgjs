@@ -80,13 +80,10 @@ var drawer = function(){
 */
 function render() {
 		//rotate scene
-
     camera.lookAt(scene.position);
 		//loop through rendered objects in scene
 		for (i = 0; i < scene.children.length; i++) {
           var object = scene.children[i];
-					//  object.rotation.x += 0.02;
-					// object.rotation.y += 0.01;
           if (object instanceof THREE.Points) {
 						//if object is a points mesh
             object.update();
@@ -108,15 +105,6 @@ function render() {
     document.getElementById("autoClear").addEventListener("click", toggleAutoClear);
 
 	}
-	function clearScene(){
-		for (let i = scene.children.length - 1; i >= 0 ; i--) {
-	    let child = scene.children[ i ];
-	    if (child != camera) { // plane & camera are stored earlier
-	      scene.remove(child);
-	    }
-  	}
-	}
-
 
   /*Event listeners*/
 	function onWindowResize(e){
@@ -189,6 +177,19 @@ function render() {
   object.scene = function(){
     return scene;
   }
-
+  object.clearScene = function(){
+    if(renderer.autoClear == false){
+      renderer.autoClear = true;
+      renderer.clear();
+      renderer.autoClear = false;
+      renderer.clear();
+    }
+		for (let i = scene.children.length - 1; i >= 0 ; i--) {
+	    let child = scene.children[ i ];
+	    if (child != camera) { // plane & camera are stored earlier
+	      scene.remove(child);
+	    }
+  	}
+	}
   return object;
 }

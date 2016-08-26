@@ -91,8 +91,6 @@ var sketch = function (){
 	Repeatedly draws the threejs objectss
 */
 function render() {
-		camera.position.x += (mouseX - camera.position.x) * .75;
-    camera.position.y += (-mouseY - camera.position.y) * .75;
 
 		//rotate scene
 		scene.rotation.x += rotX;
@@ -155,12 +153,10 @@ function render() {
 		document.addEventListener('touchmove', onTouchMove, false); //for mobile
 	}
 	function clearScene(){
-		delete pointsObj;
-		delete grahamScanObj;
-		delete quickHullObj;
+
 		for (let i = scene.children.length - 1; i >= 0 ; i--) {
-	    let child = scene.children[ i ];
-	    if ( child != axis && child != camera) { // plane & camera are stored earlier
+	    var child = scene.children[i];
+	    if (child != camera) { // plane & camera are stored earlier
 	      scene.remove(child);
 	    }
   	}

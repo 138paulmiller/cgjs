@@ -22,32 +22,47 @@
             <div class="slider"></div>
           </label><br>
         </div>
+         n:<input id="n" type="number" value = "200" style="width:50px"><br>
+         t:<input id="t" type="text" value = "Math.PI*20" size="10">
+         r:<input id="r" type="number" value = "100" style="width:50px"><br>
          x(t):<input id="xFunc" type="text" value = "Math.sqrt(t)*Math.sin(t)*r;" size="30"><br>
          y(t):<input id="yFunc" type="text" value = "Math.sqrt(t)*Math.cos(t)*r;" size="30"><br>
-         z(t):<input id="zFunc" type="text" value = "Math.sqrt(t)*Math.sin(t)*r;" size="30"><br>
+         z(t):<input id="zFunc" type="text" value = "Math.sqrt(t/12)*Math.sin(t)*r;" size="30"><br>
 
-         <button class="btn" id="generatePoints">Generate Points</input>
+         xVel(t):<input id="xVel" type="text" value = "Math.sin(t);" size="30"><br>
+         yVel(t):<input id="yVel" type="text" value = "Math.cos(t);" size="30"><br>
+         zVel(t):<input id="zVel" type="text" value = "Math.sin(t);" size="30"><br>
+
+         <button class="btn" id="generatePoints" onclick="generatePoints()">Generate Points</input>
 
      </div>
    </div>
  </head>
  <body >
    <script>
+   var d= drawer(); //create drawing object
+   var p = points(); //factory for points
    //define generation functions
    function generatePoints(){
-     var d= drawer(); //create drawing object
-     var p = points(); //factory for points
-     var r = 10;
-     var x = function(t) {return Math.sqrt(t)*Math.sin(t)*r;};
-     var y = function(t) {return Math.sqrt(t)*Math.cos(t)*r;};
-     var z = function(t) {return Math.sqrt(t)*Math.sin(t*2)*r;};
+     d.clearScene();
+     var n = eval(document.getElementById("n").value);
+     var r = eval(document.getElementById("r").value);
+     var t = eval(document.getElementById("t").value);
+
+     var xStr = document.getElementById("xFunc").value;
+     var yStr = document.getElementById("yFunc").value;
+     var zStr = document.getElementById("zFunc").value;
+
+     var x = function(t) {return eval(xStr.toString());};
+     var y = function(t) {return eval(yStr.toString());};
+     var z = function(t) {return eval(zStr.toString());};
+
      var xVel = function(t) {return Math.sin(t);};
      var yVel = function(t) {return Math.cos(t);};
-     var zVel = function(t) {return Math.cos(t);};
+     var zVel = function(t) {return Math.cos(t/12);};
      var xRange=[-100,100], yRange=[-100,100], zRange=[-100,100];
-     d.addObject(p.makeDynamicParametricPoints(1000, 5, x,y,z, xVel, yVel, zVel, xRange, yRange, zRange), "p1");
+     d.addObject(p.makeDynamicParametricPoints(n, 5, x,y,z, xVel, yVel, zVel, xRange, yRange, zRange), "p1");
   }
-  generatePoints();
    </script>
  </body>
 </html>
