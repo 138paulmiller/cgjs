@@ -11,38 +11,28 @@
    <script src="js/points.js" ></script>
    <link rel="stylesheet" type="text/css" href="css/style.css">
 
-
-
    <title>Draw138</title>
    <div  class="dropdown">
-   <button class="dropbtn" id="dropbutton">Menu</button>
-   <div class="dropdown-content">
-     <div style="border:1px solid #940044;">
-       
-       x(t):<input id="xFunc" type="text" value = "Math.sqrt(t)*Math.sin(t)*r;"><br>
-       y(t)<input id="xFunc" type="text" value = "Math.sqrt(t)*Math.sin(t)*r;"><br>
-       z(t)<input id="xFunc" type="text" value = "Math.sqrt(t)*Math.sin(t)*r;"><br>
+     <button class="dropbtn" id="dropbutton">Menu</button>
+     <div class="dropdown-content">
+        <div style="border:1px solid #940044;">
+          Auto Clear:
+          <label class="switch">
+            <input type="checkbox" id="autoClear">
+            <div class="slider"></div>
+          </label><br>
+        </div>
+         x(t):<input id="xFunc" type="text" value = "Math.sqrt(t)*Math.sin(t)*r;" size="30"><br>
+         y(t):<input id="yFunc" type="text" value = "Math.sqrt(t)*Math.cos(t)*r;" size="30"><br>
+         z(t):<input id="zFunc" type="text" value = "Math.sqrt(t)*Math.sin(t)*r;" size="30"><br>
+
+         <button class="btn" id="generatePoints">Generate Points</input>
 
      </div>
-    </div>
-  </div>
+   </div>
  </head>
  <body >
    <script>
-   //addEventListeners
-   document.getElementById("dropbutton").addEventListener("click",
-      function(){
-         var content = document.getElementsByClassName('dropdown-content');
-         for(var i = 0; i < content.length; i++){
-             if(content[i].style.display == 'block'){
-               content[i].style.display = 'none';
-             } else{
-               content[i].style.display = 'block';
-             }
-         }
-       }
-   );
-
    //define generation functions
    function generatePoints(){
      var d= drawer(); //create drawing object

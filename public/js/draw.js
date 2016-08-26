@@ -5,7 +5,7 @@
 */
 
 var drawer = function(){
-
+  var container, renderer,scene, camera;
   var object = {};
   var sceneMap = {};
 	var statsIndicator;
@@ -16,12 +16,8 @@ var drawer = function(){
 	var pointsShow;
 	var height, width, heightHalf, widthHalf, fieldOfView,aspectRatio,nearPlane, farPlane;
   var clock = 0;
-
-
   init();
   run();
-
-
 
 	function init(){
 		//init variables
@@ -57,11 +53,12 @@ var drawer = function(){
 		//create a visual axis of the planes
 
 		//Create and add the renderer to the constainer element
-		renderer = new THREE.WebGLRenderer();
+		renderer = new THREE.WebGLRenderer({preserveDrawingBuffer : true});
 		renderer.domElement.style.position = 'absolute';
 		renderer.domElement.style.top = '0px';
     renderer.domElement.style.right = '0px';
 		renderer.domElement.style.zindex = '1';
+
     renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(width, height);
     container.appendChild(renderer.domElement);
@@ -106,6 +103,10 @@ function render() {
 		document.addEventListener('mouseup', onMouseUp, false);
 		document.addEventListener('touchstart', onTouchStart, false); //for mobile
 		document.addEventListener('touchmove', onTouchMove, false); //for mobile
+    document.getElementById("dropbutton").addEventListener("touch", toggleDropdown);
+    document.getElementById("dropbutton").addEventListener("click", toggleDropdown);
+    document.getElementById("autoClear").addEventListener("click", toggleAutoClear);
+
 	}
 	function clearScene(){
 		for (let i = scene.children.length - 1; i >= 0 ; i--) {
@@ -150,10 +151,43 @@ function render() {
 			 mouseY = e.touches[0].pageY - heightHalf;
 	 }
 	}
+  function toggleDropdown(){
+     var content = document.getElementsByClassName('dropdown-content');
+     for(var i = 0; i < content.length; i++){
+         if(content[i].style.display == 'block'){
+           content[i].style.display = 'none';
+         } else{
+           content[i].style.display = 'block';
+         }
+     }
+   }
+   function toggleAutoClear(){
+      if(document.getElementById("autoClear").checked){
+        renderer.autoClear = false;
+        renderer.clear();
+
+      }else{
+        renderer.autoClear = true;
+      }
+
+    }
 
   object.addObject = function(object, id){
     scene.add(object);
     sceneMap[id] = object;
+  }
+
+  object.renderer = function(){
+    return renderer;
+  }
+  object.camera = function(){
+    return renderer;
+  }
+  object.container = function(){
+    return renderer;
+  }
+  object.scene = function(){
+    return scene;
   }
 
   return object;
