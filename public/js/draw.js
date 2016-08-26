@@ -165,6 +165,10 @@ function render() {
     sceneMap[id] = object;
   }
 
+  object.getObject = function(id){
+    return sceneMap[id];
+  }
+
   object.renderer = function(){
     return renderer;
   }
