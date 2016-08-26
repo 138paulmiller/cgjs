@@ -66,8 +66,6 @@ var drawer = function(){
 		renderer.setSize(width, height);
     container.appendChild(renderer.domElement);
 
-
-
 		//add listeners to buttons
 		addEventListeners();
 
@@ -91,7 +89,7 @@ function render() {
 		for (i = 0; i < scene.children.length; i++) {
           var object = scene.children[i];
 					//  object.rotation.x += 0.02;
-					 object.rotation.y += 0.01;
+					// object.rotation.y += 0.01;
           if (object instanceof THREE.Points) {
 						//if object is a points mesh
             object.update();
@@ -99,10 +97,6 @@ function render() {
         }
 
 		renderer.render(scene, camera);
-
-
-    clock+=.01;
-    clock%=100;
 	}
 	function addEventListeners(){
 		//add event listeners to the page
@@ -160,9 +154,6 @@ function render() {
   object.addObject = function(object, id){
     scene.add(object);
     sceneMap[id] = object;
-  }
-  object.clock = function(){
-    return clock;
   }
 
   return object;
