@@ -621,7 +621,7 @@ function render() {
         if (scene.children[i] instanceof THREE.Points) {
 					//change points size
 					var sz = eval(document.getElementById('size').value.toString());
-					scene.children[i].material = new THREE.PointsMaterial({ size : sz});
+					scene.children[i].material = new THREE.PointsMaterial({ vertexColors: THREE.VertexColors, size : sz});
 					renderer.render(scene, camera);
         }
     }
