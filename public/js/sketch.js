@@ -55,7 +55,7 @@ var sketch = function (){
 		scene.add(axis);
 
 		//Create and add the renderer to the constainer element
-		renderer = new THREE.WebGLRenderer();
+		renderer = new THREE.WebGLRenderer({preserveDrawingBuffer : true});
 		renderer.domElement.style.position = 'absolute';
 		renderer.domElement.style.top = '0px';
     renderer.domElement.style.right = '0px';
@@ -117,6 +117,7 @@ function render() {
 		document.getElementById('pointsrandom').addEventListener('click', getRandomPoints);
 		document.getElementById('toggleAxis').addEventListener('click', toggleAxis);
 		document.getElementById('togglePoints').addEventListener('click', togglePoints);
+		document.getElementById('toggleAutoClear').addEventListener('click', toggleAutoClear);
 		document.getElementById('delaunayConstruction').addEventListener('click', delaunayConstruction);
 		document.getElementById('dropbutton').addEventListener('click', toggleDropDownContent);
 		document.getElementById('texturePoints').addEventListener('click', loadTextureOnPoints);
@@ -129,6 +130,7 @@ function render() {
 		document.getElementById('pointsrandom').addEventListener('touchstart', getRandomPoints);
 		document.getElementById('toggleAxis').addEventListener('touchstart', toggleAxis);
 		document.getElementById('togglePoints').addEventListener('touchstart', togglePoints);
+		document.getElementById('toggleAutoClear').addEventListener('touchstart', toggleAutoClear);
 		document.getElementById('delaunayConstruction').addEventListener('touchstart', delaunayConstruction);
 		document.getElementById('dropbutton').addEventListener('touchstart', toggleDropDownContent);
 		document.getElementById('showMesh').addEventListener('touchstart', loadMesh);
@@ -153,10 +155,10 @@ function render() {
 		document.addEventListener('touchmove', onTouchMove, false); //for mobile
 	}
 	function clearScene(){
-
+		renderer.autoClear = true;
 		for (let i = scene.children.length - 1; i >= 0 ; i--) {
 	    var child = scene.children[i];
-	    if (child != camera) { // plane & camera are stored earlier
+	    if (child != camera && child != axis) { // plane & camera are stored earlier
 	      scene.remove(child);
 	    }
   	}
@@ -286,11 +288,11 @@ function render() {
 		var increment = (parseFloat(increment));
 		//Creates shape meshes to add to the scene
 		for(var deg = pmin; deg < pmax; deg += increment){
-			var pt = [ x(deg), y(deg),z(deg)];
-			var vec = new THREE.Vector3(pt[0], pt[1],pt[2]);
-			geometry.vertices.push(vec);
+			geometry.vertices.push(new THREE.Vector3(x(deg), y(deg),z(deg)));
+			geometry.colors.push(new THREE.Color(deg*deg%255, Math.random(), Math.random()));
+
 		}
-		var points = new THREE.Points( geometry, new THREE.PointsMaterial( {size: sz}));
+		var points = new THREE.Points( geometry, new THREE.PointsMaterial( {vertexColors : THREE.VertexColors, size: sz}));
 		return points; //add to scene
 	}
 
@@ -599,6 +601,15 @@ function render() {
 				}
 		}
 	}
+	function toggleAutoClear(){
+		 if(renderer.autoClear == true){
+			 renderer.autoClear = false;
+			 renderer.clear();
+		 }else{
+			 renderer.autoClear = true;
+		 }
+
+	 }
 	function rotationChange(){
 		rotX = eval(document.getElementById('rotX').value.toString())/100;
 		rotY = eval(document.getElementById('rotY').value.toString())/100;

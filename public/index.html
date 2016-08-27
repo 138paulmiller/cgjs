@@ -26,6 +26,7 @@
 			Z: <input id='rotZ' style='width:30px;' type='number' size='3' value='2'><br><br>
 			<button id='toggleAxis'>Toggle Axis</button>
       <button id='togglePoints'>Toggle Points<br>
+        <button id='toggleAutoClear'>Toggle AutoClear<br>
 			<button id="clear" type="button" >Clear</button>
 			<button id="texturePoints" type="button">Load Texture on Points</button><br>
       <button id="showMesh" type="button">Generate TetraMesh</button>
@@ -33,10 +34,10 @@
 			<div style="border:1px solid #940044;">
 			 Parametric pointset<br>
 				r: <input id='r' type='text' size='7' value='100'> <br>
-				t min:&nbsp;&nbsp;<input id='tmax' style='width:60px;' type='string' size='6' value='pi*2'><br>
+				t min:&nbsp;&nbsp;<input id='tmax' style='width:60px;' type='string' size='6' value='pi*10'><br>
 				t max:&nbsp;&nbsp;<input id='tmin' style='width:60px;' type='string' size='6' value='0'> <br>
-				x(t): <input id='xfunc' type='text' size='30' value='cos(t)*r'> <br>
-				y(t): <input id='yfunc' type='text' size='30' value='sin(t)*r'> <br>
+				x(t): <input id='xfunc' type='text' size='30' value='((11)*cos(t) - (6)*cos(11/6*t))*4'> <br>
+				y(t): <input id='yfunc' type='text' size='30' value='((11)*sin(t) - (6)*sin(11/6*t))*4'> <br>
 				z(t): <input id='zfunc' type='text' size='30' value='1'> <br><br>
 				increment: <input id='increment' type='int' size='6' value='pi/16'> <br><br>
 				<button id="points" type="button" >Generate Parametric Points </button><br><br>

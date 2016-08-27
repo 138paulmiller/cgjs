@@ -3,8 +3,9 @@ var points = function(){
 
   object.makeDynamicParametricPoints = function(n, sz, x,y,z,
                                                 xVelocity, yVelocity, zVelocity,
+                                                rotX, rotY, rotZ,
                                                 range=[-50,50],
-                                                inc=0.01,loop=true, reflect=true){
+                                                inc=Math.PI/16,loop=true, reflect=true){
     var geometry = new THREE.Geometry();
     var t = 0;
     var v;
@@ -23,6 +24,9 @@ var points = function(){
     geometry.increment = inc;
     geometry.loop = loop;
     geometry.reflect= reflect;
+    geometry.rotX= rotX;
+    geometry.rotY= rotY;
+    geometry.rotZ= rotZ;
 
     var pointsObj = new THREE.Points(geometry, new THREE.PointsMaterial({vertexColors: THREE.VertexColors, size: sz}));;
     pointsObj.update = function (){
@@ -42,6 +46,10 @@ var points = function(){
               if(this.geometry.vertices[j].z  > this.geometry.range[1] || this.geometry.vertices[j].z  < this.geometry.range[0]){
                 this.geometry.vertices[j].velocity[2] *= -1.0;
               }
+          }else{
+            this.geometry.vertices[j].x =this.geometry.parametrics[0](0);
+            this.geometry.vertices[j].y =this.geometry.parametrics[1](0);
+            this.geometry.vertices[j].z =this.geometry.parametrics[2](0);
           }
         }//if draw
         t+=this.geometry.increment;
@@ -58,11 +66,11 @@ var points = function(){
     for(var i = 0 ; i < n; i++){
       v = new THREE.Vector3(x(t), y(t), z(t));
       geometry.vertices.push(v);
-      geometry.colors.push(new THREE.Color(Math.random()*t,Math.random(),Math.random()));
+      geometry.colors.push(new THREE.Color(i,i/4,i+20));
       t+= inc;
     }
     geometry.dynamic = false;
-    var pointsObj = new THREE.Points(geometry, new THREE.PointsMaterial({vertexColor : THREE.vertexColor}));
+    var pointsObj = new THREE.Points(geometry, new THREE.PointsMaterial({vertexColors : THREE.VertexColors}));
     pointsObj.update = function(){};
     return pointsObj;
   };

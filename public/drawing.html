@@ -29,6 +29,11 @@
          y(t):<input id="yFunc" type="text" value = "Math.sqrt(t*2)*Math.cos(t)*r;" size="30"><br>
          z(t):<input id="zFunc" type="text" value = "0;" size="30"><br>
 
+         Rotation:<br>
+         x:<input id="rotX" type="number" value = "1" style="width:50px">
+         y:<input id="rotY" type="number" value = "1" style="width:50px">
+         z:<input id="rotZ" type="number" value = "0" style="width:50px"><br>
+
          Dynamic:
          <label class="switch">
            <input type="checkbox" id="dynamicPoints">
@@ -63,18 +68,17 @@
      var y = function(t) {return eval(yStr.toString());};
      var z = function(t) {return eval(zStr.toString());};
 
+     var rotX = function(t) {return eval(document.getElementById("rotX").value.toString());};
+     var rotY = function(t) {return eval(document.getElementById("rotY").value.toString());};
+     var rotZ = function(t) {return eval(document.getElementById("rotZ").value.toString());};
      if(document.getElementById("dynamicPoints").checked){
-
-       var xVStr = document.getElementById("xVel").value;
-       var yVStr = document.getElementById("yVel").value;
-       var zVStr = document.getElementById("zVel").value;
-       var xVel = function(t) {return eval(xVStr.toString());};
-       var yVel = function(t) {return eval(yVStr.toString());};
-       var zVel = function(t) {return eval(zVStr.toString());};
+       var xVel = function(t) {return eval(document.getElementById("xVel").value.toString());};
+       var yVel = function(t) {return eval(document.getElementById("yVel").value.toString());};
+       var zVel = function(t) {return eval(document.getElementById("zVel").value.toString());};
        var min = -1.0*r;
        var max = r;
        var range=[min,max];
-       d.addObject(p.makeDynamicParametricPoints(n, 5, x,y,z, xVel, yVel, zVel, range), "p1");
+       d.addObject(p.makeDynamicParametricPoints(n, 5, x,y,z, xVel, yVel, zVel, rotX, rotY, rotZ,range), "p1");
      }else{
        d.addObject(p.makeParametricPoints(n, 5, x,y,z, 0.01, "p1"));
      }
