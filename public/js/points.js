@@ -74,6 +74,26 @@ var points = function(){
     pointsObj.update = function(){};
     return pointsObj;
   };
+  object.makeRingOfPoints = function(n, r, w){
+    //create a set random points that are ecompassed within a ring, or
+    var deg = 0;
+    var inc = 0.2;
+    var geometry = new THREE.Geometry();
+    var bound = function(x){return (x*w*2-w);};
+    for(var i = 0; i<n; i++){
+      geometry.vertices.push(new THREE.Vector3(Math.cos(deg)*r+bound(Math.random()),
+                                                Math.sin(deg)*r+bound(Math.random()),
+                                                bound(Math.random())));
+      geometry.colors.push(new THREE.Color(i/256,i/255,i/250));
+      deg+=inc;
+    }
+    var pointsObj = new THREE.Points(geometry, new THREE.PointsMaterial({vertexColors : THREE.VertexColors}));
+    pointsObj.update = function(){
+      this.rotation.x += .01;
+      this.rotation.y += .01;
+    };
 
+    return pointsObj;
+  };
   return object;
 };
