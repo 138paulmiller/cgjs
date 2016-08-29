@@ -1,3 +1,5 @@
+
+
 var points = function(){
   var object = {};
 
@@ -84,7 +86,7 @@ var points = function(){
       geometry.vertices.push(new THREE.Vector3(Math.cos(deg)*r+bound(Math.random()),
                                                 Math.sin(deg)*r+bound(Math.random()),
                                                 bound(Math.random())));
-      geometry.colors.push(new THREE.Color(i/256,i/255,i/250));
+      geometry.colors.push(new THREE.Color(Math.random()*i,255/i,25));
       deg+=inc;
     }
     var pointsObj = new THREE.Points(geometry, new THREE.PointsMaterial({vertexColors : THREE.VertexColors}));
@@ -95,5 +97,28 @@ var points = function(){
 
     return pointsObj;
   };
+  object.makeCubeCloud = function(n, x,y,z){
+    var cubeArray = [];
+    for(var i = 0; i < n; i++){
+      var rotX = Math.random()/10;
+      var rotY = Math.random()/10;
+      var rotZ = Math.random()/10;
+
+      cubeArray.push(new THREE.Mesh(new THREE.BoxGeometry(10,10,10,10),
+      new THREE.MeshNormalMaterial(Math.random())));
+      cubeArray[i].position.x = x(i);
+      cubeArray[i].position.y = y(i);
+      cubeArray[i].position.z = z(i);
+      cubeArray[i].update= function(){
+        this.rotation.x += rotX;
+        this.rotation.y +=rotY;
+        this.rotation.y += rotZ;
+      };
+    }
+
+    return cubeArray;
+  };
+
+
   return object;
 };

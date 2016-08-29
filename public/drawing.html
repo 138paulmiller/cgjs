@@ -84,10 +84,20 @@
      }
   }
   function test(){
+    d.clearScene();
     var n = eval(document.getElementById("n").value);
     var r = eval(document.getElementById("r").value);
-    d.addObject(p.makeRingOfPoints(n, r, 30));
+    // d.addObject(p.makeRingOfPoints(n, r, 30));
+    var x = function(i){return Math.random()*r;};
+
+    var cubeArray = p.makeCubeCloud(n,x,x,x);
+    for(var i = 0;i  < cubeArray.length; i++){
+      d.addObject(cubeArray[i], i);
+    }
   }
+
+//TODO
+  //fade colors as they go, also add other functions from sketch to this page, make them modular
    </script>
  </body>
 </html>

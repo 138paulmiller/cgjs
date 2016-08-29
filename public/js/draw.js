@@ -84,7 +84,7 @@ function render() {
 		//loop through rendered objects in scene
 		for (i = 0; i < scene.children.length; i++) {
           var object = scene.children[i];
-          if (object instanceof THREE.Points) {
+          if (object instanceof THREE.Points || object instanceof THREE.Mesh) {
 						//if object is a points mesh
             object.update();
           }
